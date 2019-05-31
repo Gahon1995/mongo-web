@@ -14,3 +14,10 @@ export function deleteArticle(id) {
     method: 'delete'
   })
 }
+
+export function getArticle(aid) {
+  return request({
+    url: '/articles/' + aid,
+    method: 'get'
+  })
+}
