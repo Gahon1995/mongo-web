@@ -23,6 +23,7 @@
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
+      style="width: 100%"
       stripe
       highlight-current-row
     >
@@ -31,107 +32,79 @@
         width="50"
       />
       <!-- <el-table-column align="center" label="ID" width="80">
-        <template slot-scope="scope">{{ scope.row.aid }}</template>
+        <template slot-scope="scope">{{ scope.row.uid }}</template>
       </el-table-column>-->
       <el-table-column
-        label="标题"
+        label="uid"
         align="center"
       >
-        <template slot-scope="scope">{{ scope.row.title }}</template>
+        <template slot-scope="scope">{{ scope.row.uid }}</template>
       </el-table-column>
       <el-table-column
-        label="authors"
+        label="aid"
         align="center"
       >
-        <template slot-scope="scope">{{ scope.row.authors }}</template>
+        <template slot-scope="scope">{{ scope.row.aid }}</template>
       </el-table-column>
       <el-table-column
-        label="类别"
+        label="readOrNot"
         align="center"
       >
-        <template slot-scope="scope">{{ scope.row.category }}</template>
+        <template slot-scope="scope">{{ scope.row.readOrNot }}</template>
       </el-table-column>
       <el-table-column
-        label="abstract"
+        label="readTimeLength"
         align="center"
+      >
+        <template slot-scope="scope"> {{ scope.row.readTimeLength }} </template>
+      </el-table-column>
+      <el-table-column
+        label="readSequence"
+        align="center"
+      >
+        <template slot-scope="scope">{{ scope.row.readSequence }}</template>
+      </el-table-column>
+      <el-table-column
+        label="agreeOrNot"
+        align="center"
+      >
+        <template slot-scope="scope">{{ scope.row.agreeOrNot }}</template>
+      </el-table-column>
+      <el-table-column
+        label="commentOrNot"
+        align="center"
+      >
+        <template slot-scope="scope">{{ scope.row.commentOrNot }}</template>
+      </el-table-column>
+      <el-table-column
+        label="shareOrNot"
+        align="center"
+      >
+        <template slot-scope="scope">{{ scope.row.shareOrNot }}</template>
+      </el-table-column>
+      <el-table-column
+        label="commentDetail"
+        align="center"
+        width="150px"
         :show-overflow-tooltip="true"
       >
-        <template slot-scope="scope">{{ scope.row.abstract }}</template>
-      </el-table-column>
-      <el-table-column
-        label="articleTags"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.articleTags }}</template>
-      </el-table-column>
-      <el-table-column
-        label="language"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.language }}</template>
-      </el-table-column>
-      <el-table-column
-        label="text"
-        align="center"
-        :show-overflow-tooltip="true"
-      >
-        <template slot-scope="scope">{{ scope.row.text }}</template>
+        <template slot-scope="scope">{{ scope.row.commentDetail }}</template>
         <!-- <template slot-scope="scope">
           <el-popover
             placement="top"
             width="300"
-            trigger="click"
+            trigger="hover"
           >
-            <div>{{ scope.row.text }}</div>
+            <div>{{ scope.row.commentDetail }}</div>
             <el-button slot="reference">点击查看</el-button>
           </el-popover>
         </template> -->
       </el-table-column>
       <el-table-column
-        label="image"
-        align="center"
-      >
-        <!-- <template slot-scope="scope">{{ scope.row.image }}</template> -->
-        <template slot-scope="scope">
-          <el-popover
-            placement="top"
-            width="300"
-            trigger="click"
-          >
-            <div>{{ scope.row.image }}</div>
-            <el-button slot="reference">查看</el-button>
-          </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="video"
-        align="center"
-      >
-        <!-- <template slot-scope="scope">{{ scope.row.video }}</template> -->
-        <template slot-scope="scope">
-          <el-popover
-            placement="top"
-            width="300"
-            trigger="click"
-          >
-            <div>{{ scope.row.video }}</div>
-            <el-button slot="reference">播放</el-button>
-          </el-popover>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="更新时间"
-        align="center"
-        width="200px"
-      >
-        <template slot-scope="scope">{{ scope.row.update_time }}</template>
-      </el-table-column>
-      <el-table-column
         align="center"
         prop="created_at"
+        label="注册时间"
         width="200px"
-        label="创建时间"
       >
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -156,13 +129,13 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.size"
-      @pagination="fetchArticles"
+      @pagination="fetchUsers"
     />
   </div>
 </template>
 
 <script>
-import { getArticles, deleteArticle } from '@/api/article.js'
+import { getReads, deleteRead } from '@/api/reads.js'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -185,37 +158,39 @@ export default {
       listQuery: {
         page: 1,
         size: 10,
-        dbms: 'Beijing'
+        dbms: 'Beijing',
+        region: null,
+        uid: null,
+        aid: null
       }
     }
   },
   created() {
-    this.fetchArticles()
+    this.fetchUsers()
   },
   methods: {
     handleClick(tab, event) {
-      // this.listQuery.region = tab.name
-      this.fetchArticles()
+      this.fetchUsers()
       // console.log(tab.name)
       // console.log(tab, event)
     },
-    fetchArticles() {
+    fetchUsers() {
       this.listLoading = true
-      getArticles(this.listQuery).then(response => {
+      getReads(this.listQuery).then(response => {
         this.list = response.data.list
         this.total = response.data.total
         this.listLoading = false
       })
     },
     handleDelete(row) {
-      this.$confirm('确定删除?', '删除确认', {
+      this.$confirm('确定删除该需求?', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         center: true
       })
         .then(() => {
-          deleteArticle(row.aid)
+          deleteRead(row.rid)
             .then(() => {
               this.$notify({
                 title: '成功',

@@ -88,6 +88,21 @@ export const constantRoutes = [{
 },
 
 {
+  path: '/reads',
+  component: Layout,
+  redirect: '/reads/info',
+  children: [{
+    path: 'info',
+    name: '阅读记录',
+    component: () => import('@/views/reads/index'),
+    meta: {
+      title: '阅读记录',
+      icon: 'nested'
+    }
+  }]
+},
+
+{
   path: '/example',
   component: Layout,
   redirect: '/example/table',
@@ -154,7 +169,8 @@ export const constantRoutes = [{
       },
       children: [{
         path: 'menu1-2-1',
-        component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
+        component: () =>
+          import('@/views/nested/menu1/menu1-2/menu1-2-1'),
         name: 'Menu1-2-1',
         meta: {
           title: 'Menu1-2-1'
@@ -162,7 +178,8 @@ export const constantRoutes = [{
       },
       {
         path: 'menu1-2-2',
-        component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
+        component: () =>
+          import('@/views/nested/menu1/menu1-2/menu1-2-2'),
         name: 'Menu1-2-2',
         meta: {
           title: 'Menu1-2-2'
@@ -210,13 +227,14 @@ export const constantRoutes = [{
 }
 ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({
-    y: 0
-  }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({
+      y: 0
+    }),
+    routes: constantRoutes
+  })
 
 const router = createRouter()
 
