@@ -6,7 +6,7 @@
     <el-tabs
       v-model="listQuery.dbms"
       :stretch="true"
-      style="margin-bottom: 20px"
+      style="margin-bottom: 20px; width: 50%; align=center"
       @tab-click="handleClick"
     >
       <el-tab-pane
@@ -18,6 +18,106 @@
         name="Hong Kong"
       />
     </el-tabs>
+
+    <section id="search-title">
+      <el-form
+        :inline="true"
+        :model="listQuery"
+        class="demo-form-inline"
+      >
+        <el-form-item label="title:">
+          <el-input
+            v-model="listQuery.title"
+            type="text"
+            style="width:150px"
+            placeholder="请输入title"
+          />
+        </el-form-item>
+        <el-form-item label="类别:">
+          <el-select
+            v-model="listQuery.category"
+            placeholder="类别"
+            style="width:100px"
+          >
+            <el-option
+              label="全部"
+              :value="null"
+            />
+            <el-option
+              label="science"
+              value="science"
+            />
+            <el-option
+              label="technology"
+              value="technology"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="authors:">
+          <el-input
+            v-model="listQuery.authors"
+            type="text"
+            style="width:150px"
+            placeholder="作者"
+          />
+        </el-form-item>
+        <el-form-item label="articleTags:">
+          <el-input
+            v-model="listQuery.articleTags"
+            type="text"
+            style="width:150px"
+            placeholder="articleTags"
+          />
+        </el-form-item>
+        <el-form-item label="类别:">
+          <el-select
+            v-model="listQuery.language"
+            placeholder="类别"
+            style="width:100px"
+          >
+            <el-option
+              label="全部"
+              :value="null"
+            />
+            <el-option
+              label="中文"
+              value="zh"
+            />
+            <el-option
+              label="英文"
+              value="en"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          id="submit-item"
+          style="margin-left:20px"
+        >
+          <el-button
+            type="primary"
+            @click="onSearchSubmit"
+          >查询</el-button>
+        </el-form-item>
+        <el-form-item
+          id="clear-item"
+          class="fr"
+        >
+          <el-button
+            type="warning"
+            @click="resetSearch"
+          >重置</el-button>
+        </el-form-item>
+        <el-form-item
+          id="addNew-item"
+          class="fr"
+        >
+          <el-button
+            type="primary"
+            @click="addNewHandler"
+          >新增</el-button>
+        </el-form-item>
+      </el-form>
+    </section>
 
     <el-table
       v-loading="listLoading"
@@ -42,18 +142,21 @@
       <el-table-column
         label="authors"
         align="center"
+        width="100px"
       >
         <template slot-scope="scope">{{ scope.row.authors }}</template>
       </el-table-column>
       <el-table-column
         label="类别"
         align="center"
+        width="100px"
       >
         <template slot-scope="scope">{{ scope.row.category }}</template>
       </el-table-column>
       <el-table-column
         label="abstract"
         align="center"
+        min-width="150px"
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">{{ scope.row.abstract }}</template>
@@ -73,6 +176,7 @@
       <el-table-column
         label="text"
         align="center"
+        min-width="150px"
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">{{ scope.row.text }}</template>
@@ -185,7 +289,12 @@ export default {
       listQuery: {
         page: 1,
         size: 10,
-        dbms: 'Beijing'
+        dbms: 'Beijing',
+        title: null,
+        category: null,
+        authors: null,
+        articleTags: null,
+        language: null
       }
     }
   },
@@ -193,6 +302,30 @@ export default {
     this.fetchArticles()
   },
   methods: {
+    resetSearch() {
+      this.listQuery.title = null
+      this.listQuery.category = null
+      this.listQuery.authors = null
+      this.listQuery.articleTags = null
+      this.listQuery.language = null
+      this.fetchArticles()
+    },
+    addNewHandler() {},
+    onSearchSubmit() {
+      for (var prop in this.listQuery) {
+        if (this.listQuery[prop] === '') {
+          this.listQuery[prop] = null
+        }
+      }
+
+      // if (this.listQuery.name === '') {
+      //   this.listQuery.name = null
+      // }
+      // if (this.listQuery.gender === '') {
+      //   this.listQuery.gender = null
+      // }
+      this.fetchArticles()
+    },
     handleClick(tab, event) {
       // this.listQuery.region = tab.name
       this.fetchArticles()

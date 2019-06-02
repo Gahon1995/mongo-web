@@ -6,7 +6,7 @@
     <el-tabs
       v-model="listQuery.dbms"
       :stretch="true"
-      style="margin-bottom: 20px"
+      style="margin-bottom: 20px; width: 50%; align=center"
       @tab-click="handleClick"
     >
       <el-tab-pane
@@ -18,6 +18,58 @@
         name="Hong Kong"
       />
     </el-tabs>
+
+    <section id="search-title">
+      <el-form
+        :inline="true"
+        :model="listQuery"
+        class="demo-form-inline"
+      >
+        <el-form-item label="uid:">
+          <el-input
+            v-model="listQuery.uid"
+            type="text"
+            style="width:150px"
+            placeholder="请输入uid"
+          />
+        </el-form-item>
+        <el-form-item label="aid:">
+          <el-input
+            v-model="listQuery.aid"
+            type="text"
+            style="width:150px"
+            placeholder="请输入aid"
+          />
+        </el-form-item>
+        <el-form-item
+          id="submit-item"
+          style="margin-left:20px"
+        >
+          <el-button
+            type="primary"
+            @click="onSearchSubmit"
+          >查询</el-button>
+        </el-form-item>
+        <el-form-item
+          id="clear-item"
+          class="fr"
+        >
+          <el-button
+            type="warning"
+            @click="resetSearch"
+          >重置</el-button>
+        </el-form-item>
+        <el-form-item
+          id="addNew-item"
+          class="fr"
+        >
+          <el-button
+            type="primary"
+            @click="addNewHandler"
+          >新增</el-button>
+        </el-form-item>
+      </el-form>
+    </section>
 
     <el-table
       v-loading="listLoading"
@@ -159,7 +211,6 @@ export default {
         page: 1,
         size: 10,
         dbms: 'Beijing',
-        region: null,
         uid: null,
         aid: null
       }
@@ -169,6 +220,20 @@ export default {
     this.fetchUsers()
   },
   methods: {
+    resetSearch() {
+      this.listQuery.uid = null
+      this.listQuery.aid = null
+      this.fetchUsers()
+    },
+    addNewHandler() {},
+    onSearchSubmit() {
+      for (var prop in this.listQuery) {
+        if (this.listQuery[prop] === '') {
+          this.listQuery[prop] = null
+        }
+      }
+      this.fetchUsers()
+    },
     handleClick(tab, event) {
       this.fetchUsers()
       // console.log(tab.name)

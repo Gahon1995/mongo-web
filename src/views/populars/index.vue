@@ -18,6 +18,25 @@
         name="Hong Kong"
       />
     </el-tabs>
+    <!-- <el-tabs
+      v-model="listQuery.level"
+      :stretch="true"
+      style="margin-bottom: 20px"
+      @tab-click="handleLevelClick"
+    >
+      <el-tab-pane
+        label="daily"
+        name="daily"
+      />
+      <el-tab-pane
+        label="weekly"
+        name="weekly"
+      />
+      <el-tab-pane
+        label="monthly"
+        name="monthly"
+      />
+    </el-tabs> -->
 
     <section id="search-title">
       <el-form
@@ -25,33 +44,33 @@
         :model="listQuery"
         class="demo-form-inline"
       >
-        <el-form-item label="用户名:">
-          <el-input
-            v-model="listQuery.name"
-            type="text"
-            style="width:150px"
-            placeholder="请输入用户名"
-          />
-        </el-form-item>
-        <el-form-item label="性别:">
+        <el-form-item label="level:">
           <el-select
-            v-model="listQuery.gender"
-            placeholder="性别"
+            v-model="listQuery.level"
+            placeholder="级别"
             style="width:100px"
           >
             <el-option
-              label="全部"
-              :value="null"
+              label="daily"
+              value="daily"
             />
             <el-option
-              label="男"
-              value="male"
+              label="weekly"
+              value="weekly"
             />
             <el-option
-              label="女"
-              value="female"
+              label="monthly"
+              value="monthly"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="date:">
+          <el-date-picker
+            v-model="listQuery.timestamp"
+            type="date"
+            value-format="timestamp"
+            placeholder="选择日期"
+          />
         </el-form-item>
         <el-form-item
           id="submit-item"
@@ -78,7 +97,10 @@
           <el-button
             type="primary"
             @click="addNewHandler"
-          >新增</el-button>
+          >
+            <div v-if="listQuery.timestamp != null">生成所选日期热门</div>
+            <div v-else>生成今日热门文章</div>
+          </el-button>
         </el-form-item>
       </el-form>
     </section>
@@ -87,8 +109,9 @@
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
-      stripe
+      style="100%"
       highlight-current-row
+      @sort-change="sortChange"
     >
       <el-table-column
         type="index"
@@ -98,83 +121,38 @@
         <template slot-scope="scope">{{ scope.row.uid }}</template>
       </el-table-column> -->
       <el-table-column
-        label="姓名"
-        width="110"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.name }}</template>
-      </el-table-column>
-      <el-table-column
-        label="性别"
-        width="80"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <a v-if="scope.row.gender === 'male'">男</a>
-          <a v-else>女</a>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="电话"
-        width="200"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.phone }}</template>
-      </el-table-column>
-      <el-table-column
-        label="邮件"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.email }}</template>
-      </el-table-column>
-      <el-table-column
-        label="dept"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.dept }}</template>
-      </el-table-column>
-      <el-table-column
-        label="grade"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.grade }}</template>
-      </el-table-column>
-      <el-table-column
-        label="语言"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.language }}</template>
-      </el-table-column>
-      <el-table-column
-        label="region"
-        align="center"
+        label="level"
         width="100px"
-      >
-        <template slot-scope="scope">{{ scope.row.region }}</template>
-      </el-table-column>
-      <el-table-column
-        label="role"
         align="center"
       >
-        <template slot-scope="scope">{{ scope.row.role }}</template>
+        <template slot-scope="scope">{{ scope.row.temporalGranularity }}</template>
       </el-table-column>
+
       <el-table-column
-        label="Tags"
+        label="articleAids"
         align="center"
+        min-width="500px"
+        fit
       >
-        <template slot-scope="scope">{{ scope.row.preferTags }}</template>
-      </el-table-column>
-      <el-table-column
-        label="Credits"
-        align="center"
-      >
-        <template slot-scope="scope">{{ scope.row.obtainedCredits }}</template>
+        <template slot-scope="scope">{{ scope.row.articleAidDict }}</template>
       </el-table-column>
       <el-table-column
         align="center"
         prop="created_at"
         width="200"
-        label="注册时间"
+        label="更新时间"
+      >
+        <template slot-scope="scope">
+          <i class="el-icon-time" />
+          <span>{{ scope.row.update_time }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="timestamp"
+        width="120"
+        sortable="custom"
+        label="timestamp"
       >
         <template slot-scope="scope">
           <i class="el-icon-time" />
@@ -199,13 +177,13 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.size"
-      @pagination="fetchUsers"
+      @pagination="fetchPopulars"
     />
   </div>
 </template>
 
 <script>
-import { getUsers, deleteUser } from '@/api/admin.js'
+import { getPopulars, deletePopular, updatePopulars } from '@/api/populars.js'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -223,44 +201,80 @@ export default {
   data() {
     return {
       total: 0,
-      activeName: 'Beijing',
+      // activeName: 'Beijing',
       list: null,
       listLoading: true,
       listQuery: {
         page: 1,
         size: 10,
         dbms: 'Beijing',
-        name: null,
-        gender: null
+        sort_by: 'timestamp',
+        level: 'daily',
+        timestamp: null
       }
     }
   },
   created() {
-    this.fetchUsers()
+    this.fetchPopulars()
   },
   methods: {
     resetSearch() {
-      this.listQuery.name = null
-      this.listQuery.gender = null
-      this.fetchUsers()
+      this.listQuery.level = 'daily'
+      this.listQuery.timestamp = null
+      this.fetchPopulars()
     },
-    addNewHandler() {},
+    addNewHandler() {
+      var _t = this.listQuery.timestamp
+      var data = {}
+      if (_t != null) {
+        data['timestamp'] = _t
+      }
+      updatePopulars(data).then(response => {
+        if (response.code === 200) {
+          this.$message({
+            message: '热门文章更新成功',
+            type: 'success'
+          })
+          this.fetchPopulars()
+        } else {
+          // this.$message({
+          //   message: response.data.message,
+          //   type: 'error'
+          // })
+        }
+      })
+    },
     onSearchSubmit() {
       for (var prop in this.listQuery) {
         if (this.listQuery[prop] === '') {
           this.listQuery[prop] = null
         }
       }
-      this.fetchUsers()
+      this.fetchPopulars()
     },
     handleClick(tab, event) {
-      this.fetchUsers()
+      this.fetchPopulars()
       // console.log(tab.name)
       // console.log(tab, event)
     },
-    fetchUsers() {
+    // handleLevelClick(tab, event) {
+    //   this.fetchPopulars()
+    //   // console.log(tab.name)
+    //   // console.log(tab, event)
+    // },
+    sortChange(column) {
+      // console.log(column.prop)
+      this.listQuery.sort_by = column.prop
+      if (column.order === 'descending') {
+        this.listQuery.sort_by = '-' + column.prop
+      }
+      // this.listQuery.sort_by = order
+      // console.log(this.listQuery)
+      this.fetchPopulars()
+    },
+    fetchPopulars() {
       this.listLoading = true
-      getUsers(this.listQuery).then(response => {
+      getPopulars(this.listQuery).then(response => {
         this.list = response.data.list
         this.total = response.data.total
         this.listLoading = false
@@ -274,7 +288,7 @@ export default {
         center: true
       })
         .then(() => {
-          deleteUser(row.uid)
+          deletePopular(row.id)
             .then(() => {
               this.$notify({
                 title: '成功',
