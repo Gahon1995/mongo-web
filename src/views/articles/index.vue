@@ -308,6 +308,7 @@ export default {
       this.listQuery.authors = null
       this.listQuery.articleTags = null
       this.listQuery.language = null
+      this.listQuery.page = 1
       this.fetchArticles()
     },
     addNewHandler() {},
@@ -318,16 +319,12 @@ export default {
         }
       }
 
-      // if (this.listQuery.name === '') {
-      //   this.listQuery.name = null
-      // }
-      // if (this.listQuery.gender === '') {
-      //   this.listQuery.gender = null
-      // }
+      this.listQuery.page = 1
       this.fetchArticles()
     },
     handleClick(tab, event) {
       // this.listQuery.region = tab.name
+      this.listQuery.page = 1
       this.fetchArticles()
       // console.log(tab.name)
       // console.log(tab, event)

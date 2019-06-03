@@ -242,6 +242,7 @@ export default {
     resetSearch() {
       this.listQuery.name = null
       this.listQuery.gender = null
+      this.listQuery.page = 1
       this.fetchUsers()
     },
     addNewHandler() {},
@@ -251,9 +252,11 @@ export default {
           this.listQuery[prop] = null
         }
       }
+      this.listQuery.page = 1
       this.fetchUsers()
     },
     handleClick(tab, event) {
+      this.listQuery.page = 1
       this.fetchUsers()
       // console.log(tab.name)
       // console.log(tab, event)

@@ -219,6 +219,7 @@ export default {
   },
   methods: {
     resetSearch() {
+      this.listQuery.page = 1
       this.listQuery.level = 'daily'
       this.listQuery.timestamp = null
       this.fetchPopulars()
@@ -245,6 +246,7 @@ export default {
       })
     },
     onSearchSubmit() {
+      this.listQuery.page = 1
       for (var prop in this.listQuery) {
         if (this.listQuery[prop] === '') {
           this.listQuery[prop] = null
@@ -253,6 +255,7 @@ export default {
       this.fetchPopulars()
     },
     handleClick(tab, event) {
+      this.listQuery.page = 1
       this.fetchPopulars()
       // console.log(tab.name)
       // console.log(tab, event)

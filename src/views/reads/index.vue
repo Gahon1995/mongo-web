@@ -221,12 +221,14 @@ export default {
   },
   methods: {
     resetSearch() {
+      this.listQuery.page = 1
       this.listQuery.uid = null
       this.listQuery.aid = null
       this.fetchUsers()
     },
     addNewHandler() {},
     onSearchSubmit() {
+      this.listQuery.page = 1
       for (var prop in this.listQuery) {
         if (this.listQuery[prop] === '') {
           this.listQuery[prop] = null
@@ -235,6 +237,7 @@ export default {
       this.fetchUsers()
     },
     handleClick(tab, event) {
+      this.listQuery.page = 1
       this.fetchUsers()
       // console.log(tab.name)
       // console.log(tab, event)
