@@ -53,27 +53,36 @@
       style="margin-top:30px; max-width:800px;margin:30px auto;"
       v-loading='loading'
     >
-      <el-divider></el-divider>
-      <div
-        v-for="(item, index) in 10"
-        :key="item"
+      <transition-group
+        name="list-complete"
+        tag="p"
       >
-        <el-row style="margin-left: 30px">
-          <el-col
-            :span="4"
-            style="font-size: 1.2rem;font-style: italic"
-          > {{index + 1 }}. </el-col>
-          <el-col :span="20">title{{ item }}</el-col>
-        </el-row>
-        <el-divider></el-divider>
-
-      </div>
+        <!-- <div v-show="!loading"> -->
+        <el-divider :key="dividere"></el-divider>
+        <div
+          v-for="(item, index) in toplist"
+          :key="item.aid"
+          class="list-complete-item"
+        >
+          <el-row style="margin-left: 30px">
+            <el-col
+              :span="4"
+              style="font-size: 1.2rem;font-style: italic"
+            > {{index + 1 }}. </el-col>
+            <el-col :span="20">{{ item.title }}</el-col>
+          </el-row>
+          <el-divider></el-divider>
+        </div>
+        <!-- </div> -->
+      </transition-group>
     </el-card>
 
   </div>
 </template>
 
 <<script>
+import { getPublicPopulars } from '@/api/populars.js'
+
 export default {
   data(){
     return {
@@ -84,17 +93,22 @@ export default {
         brn3:""
       },
       listQuery:{
-        level: 'daily'
+        level: 'daily',
+        dbms: 'Beijing',
+        t: Date.parse(new Date(new Date(1506268800000).setHours(0, 0, 0, 0)))
       },
       toplist:[
 
       ]
     }
   },
+  mounted() {
+    this.fetchPopulars()
+  },
   methods: {
     handleClick(region) {
       this.listQuery.dbms = region
-      // console.log(region)
+      this.fetchPopulars()
     },
     resetBtn(btn) {
       this.buttons.btn1 = ""
@@ -115,23 +129,30 @@ export default {
       this.listQuery.level = 'daily'
       this.resetBtn('btn1')
 
-      this.loading = true
+      this.fetchPopulars()
       // console.log("dailyPopular")
     },
     weeklyPopular() {
       this.listQuery.level = 'weekly'
       this.resetBtn('btn2')
 
-      this.loading = true
+      this.fetchPopulars()
       // console.log("weeklyPopular")
     },
     monthlyPopular() {
       this.listQuery.level = 'monthly'
       this.resetBtn('btn3')
 
-      this.loading = true
+      this.fetchPopulars()
       // console.log("monthlyPopular")
-    }
+    },
+    fetchPopulars() {
+      this.loading = true
+      getPublicPopulars(this.listQuery).then(response => {
+        this.toplist = response.data
+        this.loading = false
+      })
+    },
   }
 }
 </script>
@@ -144,5 +165,18 @@ export default {
   // right: 0px;
   // bottom: 0px;
   margin-top: 100px;
+}
+.list-complete-item {
+  transition: all 1s;
+  // display: inline-block;
+  margin-right: 10px;
+}
+.list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active for below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  position: absolute;
 }
 </style>

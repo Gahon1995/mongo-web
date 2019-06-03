@@ -8,6 +8,14 @@ export function getPopulars(query) {
   })
 }
 
+export function getPublicPopulars(query) {
+  return request({
+    url: '/public/populars',
+    method: 'get',
+    params: query
+  })
+}
+
 export function updatePopulars(data) {
   return request({
     url: '/populars',

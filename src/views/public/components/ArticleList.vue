@@ -70,71 +70,78 @@
         </el-form>
       </section>
     </div>
-
-    <el-card
-      shadow="hover"
-      v-for="(article,index) in this.list"
-      :key="'p'+index"
-      style="margin-bottom: 20px; align: left"
-    >
-
-      <!-- {{ article.title }} -->
-
-      <div
-        @click="goDetails(article.aid)"
-        slot="header"
-      >
-        <el-row>
-          <el-col
-            :span="16"
-            class="title"
-          ><i class="el-icon-edit-outline"></i>&nbsp;&nbsp; {{article.title}}</el-col>
-          <el-col
-            :span="8"
-            style="text-align: right; margin-top:10px"
-          >{{ article.authors }}</el-col>
-        </el-row>
-
-      </div>
-
-      <el-row style="font-size:1.0rem; color: rgb(96, 108, 113)">
-        <!-- <el-col :span="8">作者: {{ article.authors }}</el-col> -->
-        <!-- <el-col :span="8"> a</el-col> -->
-        <el-col :span="8">类别: {{article.category }}</el-col>
-        <el-col :span="8">语言: {{ article.language }}</el-col>
-      </el-row>
-
-      <div class="text">
-        {{ article.abstract }}
-      </div>
-      <div style="font-size: 1.1rem;color: #303133;padding: 10px 0px 0px 0px">
-        <el-row>
-          <el-col
-            :span="8"
-            style="padding-top: 5px"
+    <transition name="fade">
+      <div v-show="!listLoading">
+        <span
+          class="list-complete-item"
+          v-for="(article) in this.list"
+          :key="article.aid"
+        >
+          <el-card
+            shadow="hover"
+            style="margin-bottom: 20px; align: left"
           >
-            <el-tag
-              size="small"
-              type="success"
-            >{{article.articleTags}}</el-tag>
-          </el-col>
-          <el-col
-            :span="16"
-            style="text-align: right;"
-          >
-            <!-- <el-tag
+
+            <!-- {{ article.title }} -->
+
+            <div
+              @click="goDetails(article.aid)"
+              slot="header"
+            >
+              <el-row>
+                <el-col
+                  :span="16"
+                  class="title"
+                ><i class="el-icon-edit-outline"></i>&nbsp;&nbsp; {{article.title}}</el-col>
+                <el-col
+                  :span="8"
+                  style="text-align: right; margin-top:10px"
+                >{{ article.authors }}</el-col>
+              </el-row>
+
+            </div>
+
+            <el-row style="font-size:1.0rem; color: rgb(96, 108, 113)">
+              <!-- <el-col :span="8">作者: {{ article.authors }}</el-col> -->
+              <!-- <el-col :span="8"> a</el-col> -->
+              <el-col :span="8">类别: {{article.category }}</el-col>
+              <el-col :span="8">语言: {{ article.language }}</el-col>
+            </el-row>
+
+            <div class="text">
+              {{ article.abstract }}
+            </div>
+            <div style="font-size: 1.1rem;color: #303133;padding: 10px 0px 0px 0px">
+              <el-row>
+                <el-col
+                  :span="8"
+                  style="padding-top: 5px"
+                >
+                  <el-tag
+                    size="small"
+                    type="success"
+                  >{{article.articleTags}}</el-tag>
+                </el-col>
+                <el-col
+                  :span="16"
+                  style="text-align: right;"
+                >
+                  <!-- <el-tag
               size="small"
               type="danger"
               v-if="item.license"
             >{{item.license}}</el-tag> -->
 
-            <div style="font-size: 0.9rem;line-height: 1.5;color: #606c71;">
-              最近更新 {{ article.update_time }}
+                  <div style="font-size: 0.9rem;line-height: 1.5;color: #606c71;">
+                    最近更新 {{ article.update_time }}
+                  </div>
+                </el-col>
+              </el-row>
             </div>
-          </el-col>
-        </el-row>
+          </el-card>
+        </span>
       </div>
-    </el-card>
+    </transition>
 
     <pagination
       v-show="total / listQuery.size > 1"
@@ -180,7 +187,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.fetchArticles()
   },
   methods: {
@@ -279,5 +286,12 @@ export default {
 }
 .el-card__header {
   padding-bottom: 10px;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
