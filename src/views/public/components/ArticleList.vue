@@ -1,21 +1,6 @@
 <template>
   <div class="app-container">
     <div align="center">
-      <el-tabs
-        v-model="listQuery.dbms"
-        :stretch="true"
-        style="margin-bottom: 20px; width: 50%; align=center"
-        @tab-click="handleClick"
-      >
-        <el-tab-pane
-          label="Beijing"
-          name="Beijing"
-        />
-        <el-tab-pane
-          label="Hong Kong"
-          name="Hong Kong"
-        />
-      </el-tabs>
 
       <section id="search-title">
         <el-form
@@ -27,7 +12,7 @@
             <el-input
               v-model="listQuery.title"
               type="text"
-              style="width:150px"
+              style="width:120px"
               placeholder="请输入title"
             />
           </el-form-item>
@@ -35,7 +20,7 @@
             <el-select
               v-model="listQuery.category"
               placeholder="类别"
-              style="width:100px"
+              style="width:120px"
             >
               <el-option
                 label="全部"
@@ -55,37 +40,9 @@
             <el-input
               v-model="listQuery.authors"
               type="text"
-              style="width:150px"
+              style="width:100px"
               placeholder="作者"
             />
-          </el-form-item>
-          <el-form-item label="articleTags:">
-            <el-input
-              v-model="listQuery.articleTags"
-              type="text"
-              style="width:150px"
-              placeholder="articleTags"
-            />
-          </el-form-item>
-          <el-form-item label="类别:">
-            <el-select
-              v-model="listQuery.language"
-              placeholder="类别"
-              style="width:100px"
-            >
-              <el-option
-                label="全部"
-                :value="null"
-              />
-              <el-option
-                label="中文"
-                value="zh"
-              />
-              <el-option
-                label="英文"
-                value="en"
-              />
-            </el-select>
           </el-form-item>
           <el-form-item
             id="submit-item"
@@ -95,11 +52,11 @@
               type="primary"
               @click="onSearchSubmit"
             >查询</el-button>
-          </el-form-item>
+            <!-- </el-form-item>
           <el-form-item
             id="clear-item"
             class="fr"
-          >
+          > -->
             <el-button
               type="warning"
               @click="resetSearch"
@@ -109,10 +66,6 @@
             id="addNew-item"
             class="fr"
           >
-            <el-button
-              type="primary"
-              @click="addNewHandler"
-            >新增</el-button>
           </el-form-item>
         </el-form>
       </section>
@@ -129,15 +82,24 @@
 
       <div
         @click="goDetails(article.aid)"
-        class="title"
         slot="header"
       >
-        <i class="el-icon-s-order"></i>&nbsp;&nbsp; {{article.title}}
+        <el-row>
+          <el-col
+            :span="16"
+            class="title"
+          ><i class="el-icon-edit-outline"></i>&nbsp;&nbsp; {{article.title}}</el-col>
+          <el-col
+            :span="8"
+            style="text-align: right; margin-top:10px"
+          >{{ article.authors }}</el-col>
+        </el-row>
 
       </div>
 
-      <el-row style="text_align:20px; font-size:1.0rem">
-        <el-col :span="8">作者: {{ article.authors }}</el-col>
+      <el-row style="font-size:1.0rem; color: rgb(96, 108, 113)">
+        <!-- <el-col :span="8">作者: {{ article.authors }}</el-col> -->
+        <!-- <el-col :span="8"> a</el-col> -->
         <el-col :span="8">类别: {{article.category }}</el-col>
         <el-col :span="8">语言: {{ article.language }}</el-col>
       </el-row>
@@ -148,15 +110,16 @@
       <div style="font-size: 1.1rem;color: #303133;padding: 10px 0px 0px 0px">
         <el-row>
           <el-col
-            :span="16"
+            :span="8"
             style="padding-top: 5px"
           >
-            <div style="font-size: 0.9rem;line-height: 1.5;color: #606c71;">
-              最近更新 {{ article.update_time }}
-            </div>
+            <el-tag
+              size="small"
+              type="success"
+            >{{article.articleTags}}</el-tag>
           </el-col>
           <el-col
-            :span="8"
+            :span="16"
             style="text-align: right;"
           >
             <!-- <el-tag
@@ -164,10 +127,10 @@
               type="danger"
               v-if="item.license"
             >{{item.license}}</el-tag> -->
-            <el-tag
-              size="small"
-              type="success"
-            >{{article.articleTags}}</el-tag>
+
+            <div style="font-size: 0.9rem;line-height: 1.5;color: #606c71;">
+              最近更新 {{ article.update_time }}
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -206,13 +169,14 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        size: 10,
+        size: 5,
         dbms: 'Beijing',
         title: null,
         category: null,
         authors: null,
         articleTags: null,
-        language: null
+        language: null,
+        detail: '0'
       }
     }
   },
@@ -220,6 +184,9 @@ export default {
     this.fetchArticles()
   },
   methods: {
+    goDetails(data) {
+      console.log(data)
+    },
     resetSearch() {
       this.listQuery.title = null
       this.listQuery.category = null
@@ -240,8 +207,8 @@ export default {
       this.listQuery.page = 1
       this.fetchArticles()
     },
-    handleClick(tab, event) {
-      // this.listQuery.region = tab.name
+    handleClick(dbms) {
+      this.listQuery.dbms = dbms
       this.listQuery.page = 1
       this.fetchArticles()
       // console.log(tab.name)
@@ -295,13 +262,22 @@ export default {
 .title {
   font-size: 1.5rem;
   text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
-  color: red;
+  // padding: 1px 2px;
+  color: #1e6bb8;
 }
 .text {
   font-size: 1.15rem;
   line-height: 1.5;
   color: #303133;
   padding: 20px 0px 0px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 80px;
+}
+.el-card__header {
+  padding-bottom: 10px;
 }
 </style>
