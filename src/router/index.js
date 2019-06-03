@@ -58,6 +58,21 @@ export const constantRoutes = [{
 },
 
 {
+  path: '/public',
+  component: Layout,
+  redirect: '/public/index',
+  children: [{
+    path: 'index',
+    name: 'public',
+    component: () => import('@/views/public/index'),
+    meta: {
+      title: '主页',
+      icon: 'dashboard'
+    }
+  }]
+},
+
+{
   path: '/users',
   component: Layout,
   redirect: '/users/info',
