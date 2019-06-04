@@ -70,29 +70,61 @@
         </el-form>
       </section>
     </div>
-    <transition name="fade">
+
+    <div v-show="!listLoading">
+      <div
+        v-for="(article) in this.list"
+        :key="article.aid"
+      >
+        <div
+          class="art"
+          style="background: #ffffff;padding:1.5rem 2rem;margin-bottom:5px"
+        >
+          <div
+            class="head-info"
+            style="font-size: 1rem;color: #b2bac2"
+          >
+            {{ article.authors}} &nbsp;&nbsp;· {{article.category}} &nbsp;&nbsp;· &nbsp;&nbsp; {{article.language}}
+          </div>
+          <div
+            class='title1'
+            style="font-size:12px;line-height:normal;margin: .5rem 0 1rem; white-space:nowrap; overflow: hidden; text-overflow:ellipsis"
+          >
+            <a style="font-size:1.4rem;font-weight:600;line-height:1.2;color:#2e3135"> {{article.title}}</a>
+          </div>
+          <div class='abstract'>{{article.abstract}}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <transition name="fade">
       <div v-show="!listLoading">
         <span
-          class="list-complete-item"
           v-for="(article) in this.list"
           :key="article.aid"
         >
           <el-card
             shadow="hover"
-            style="margin-bottom: 20px; align: left"
+            style="margin-bottom: 5px; align: left"
           >
 
-            <!-- {{ article.title }} -->
-
-            <div
-              @click="goDetails(article.aid)"
-              slot="header"
-            >
+            <div slot="header">
               <el-row>
-                <el-col
-                  :span="16"
-                  class="title"
-                ><i class="el-icon-edit-outline"></i>&nbsp;&nbsp; {{article.title}}</el-col>
+                <el-col :span="16">
+                  <i
+                    class="el-icon-edit-outline"
+                    style='font-size:30px; vertical-align: middle;'
+                  ></i>
+                  <router-link :to="'/articles/'+article.aid + '?category=' + article.category">
+                    <div
+                      class="title"
+                      @click="goDetails(article.aid)"
+                      style="display:inline-block; margin-left: 10px; vertical-align: middle;"
+                    >
+                      {{article.title}}
+                    </div>
+                  </router-link>
+                </el-col>
                 <el-col
                   :span="8"
                   style="text-align: right; margin-top:10px"
@@ -102,8 +134,6 @@
             </div>
 
             <el-row style="font-size:1.0rem; color: rgb(96, 108, 113)">
-              <!-- <el-col :span="8">作者: {{ article.authors }}</el-col> -->
-              <!-- <el-col :span="8"> a</el-col> -->
               <el-col :span="8">类别: {{article.category }}</el-col>
               <el-col :span="8">语言: {{ article.language }}</el-col>
             </el-row>
@@ -126,11 +156,6 @@
                   :span="16"
                   style="text-align: right;"
                 >
-                  <!-- <el-tag
-              size="small"
-              type="danger"
-              v-if="item.license"
-            >{{item.license}}</el-tag> -->
 
                   <div style="font-size: 0.9rem;line-height: 1.5;color: #606c71;">
                     最近更新 {{ article.update_time }}
@@ -141,7 +166,7 @@
           </el-card>
         </span>
       </div>
-    </transition>
+    </transition> -->
 
     <pagination
       v-show="total / listQuery.size > 1"
@@ -267,7 +292,7 @@ export default {
 
 <style lang="scss">
 .title {
-  font-size: 1.5rem;
+  font-size: 30px;
   text-decoration: none;
   overflow: hidden;
   text-overflow: ellipsis;

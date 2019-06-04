@@ -15,9 +15,18 @@ export function deleteArticle(id) {
   })
 }
 
-export function getArticle(aid) {
+export function getArticle(aid, query) {
   return request({
     url: '/articles/' + aid,
-    method: 'get'
+    method: 'get',
+    params: query
+  })
+}
+
+export function getArticleRecord(aid, query) {
+  return request({
+    url: '/records/' + aid,
+    method: 'get',
+    params: query
   })
 }

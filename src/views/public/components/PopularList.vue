@@ -51,30 +51,32 @@
 
     <el-card
       style="margin-top:30px; max-width:800px;margin:30px auto;"
-      v-loading='loading'
+      :v-loading='loading'
     >
-      <transition-group
+      <!-- <transition-group
         name="list-complete"
         tag="p"
+      > -->
+      <!-- <div v-show="!loading"> -->
+      <el-divider key="dividere"></el-divider>
+      <div
+        v-for="(item, index) in toplist"
+        :key="item.aid"
+        class="list-complete-item"
       >
-        <!-- <div v-show="!loading"> -->
-        <el-divider :key="dividere"></el-divider>
-        <div
-          v-for="(item, index) in toplist"
-          :key="item.aid"
-          class="list-complete-item"
-        >
-          <el-row style="margin-left: 30px">
+        <el-row style="margin-left: 30px">
+          <router-link :to="'/articles/'+item.aid + '?category=' + item.category">
             <el-col
               :span="4"
               style="font-size: 1.2rem;font-style: italic"
             > {{index + 1 }}. </el-col>
             <el-col :span="20">{{ item.title }}</el-col>
-          </el-row>
-          <el-divider></el-divider>
-        </div>
-        <!-- </div> -->
-      </transition-group>
+          </router-link>
+        </el-row>
+        <el-divider key="divider + item.aid"></el-divider>
+      </div>
+      <!-- </div> -->
+      <!-- </transition-group> -->
     </el-card>
 
   </div>
@@ -95,7 +97,7 @@ export default {
       listQuery:{
         level: 'daily',
         dbms: 'Beijing',
-        t: Date.parse(new Date(new Date(1506268800000).setHours(0, 0, 0, 0)))
+        t: Date.parse(new Date(new Date(1516204800000).setHours(0, 0, 0, 0)))
       },
       toplist:[
 
