@@ -3,65 +3,74 @@
     <div align="center">
 
       <section id="search-title">
+
         <el-form
           :inline="true"
           :model="listQuery"
           class="demo-form-inline"
         >
-          <el-form-item label="title:">
-            <el-input
-              v-model="listQuery.title"
-              type="text"
-              style="width:120px"
-              placeholder="请输入title"
-            />
-          </el-form-item>
-          <el-form-item label="类别:">
-            <el-select
-              v-model="listQuery.category"
-              placeholder="类别"
-              style="width:120px"
+          <el-row>
+            <el-form-item label="title:">
+              <el-input
+                v-model="listQuery.title"
+                type="text"
+                style="width:120px"
+                placeholder="请输入title"
+              />
+            </el-form-item>
+            <el-form-item label="类别:">
+              <el-select
+                v-model="listQuery.category"
+                placeholder="类别"
+                style="width:120px"
+              >
+                <el-option
+                  label="全部"
+                  :value="null"
+                />
+                <el-option
+                  label="science"
+                  value="science"
+                />
+                <el-option
+                  label="technology"
+                  value="technology"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="authors:">
+              <el-input
+                v-model="listQuery.authors"
+                type="text"
+                style="width:100px"
+                placeholder="作者"
+              />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item
+              id="submit-item"
+              style="margin-left:20px"
             >
-              <el-option
-                label="全部"
-                :value="null"
-              />
-              <el-option
-                label="science"
-                value="science"
-              />
-              <el-option
-                label="technology"
-                value="technology"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="authors:">
-            <el-input
-              v-model="listQuery.authors"
-              type="text"
-              style="width:100px"
-              placeholder="作者"
-            />
-          </el-form-item>
-          <el-form-item
-            id="submit-item"
-            style="margin-left:20px"
-          >
-            <el-button
-              type="primary"
-              @click="onSearchSubmit"
-            >查询</el-button>
-            <!-- </el-form-item>
+              <el-button
+                type="primary"
+                @click="onSearchSubmit"
+              >查询</el-button>
+              <!-- </el-form-item>
           <el-form-item
             id="clear-item"
             class="fr"
           > -->
-            <el-button
-              type="warning"
-              @click="resetSearch"
-            >重置</el-button>
-          </el-form-item>
+              <el-button
+                type="warning"
+                @click="resetSearch"
+              >重置</el-button>
+              <el-button
+                type="success"
+                @click="recentUpdate"
+              >最近更细</el-button>
+            </el-form-item>
+          </el-row>
           <el-form-item
             id="addNew-item"
             class="fr"
@@ -71,51 +80,54 @@
       </section>
     </div>
 
-    <div v-show="!listLoading">
+    <!-- <div v-if="!listLoading">
       <div
         v-for="(article) in this.list"
         :key="article.aid"
       >
-        <div
-          class="art"
-          style="background: #ffffff;padding:1.5rem 2rem;margin-bottom:5px"
-        >
+        <router-link :to="'/articles/'+article.aid + '?category=' + article.category">
           <div
-            class="head-info"
-            style="font-size: 1rem;color: #b2bac2"
+            class="art"
+            style="background: #ffffff;padding:1.5rem 2rem;margin-bottom:5px"
           >
-            {{ article.authors}} &nbsp;&nbsp;· {{article.category}} &nbsp;&nbsp;· &nbsp;&nbsp; {{article.language}}
+            <div
+              class="head-info"
+              style="font-size: 1rem;color: #b2bac2"
+            >
+              {{ article.authors}} &nbsp;&nbsp;· {{article.category}} &nbsp;&nbsp;· &nbsp;&nbsp; {{article.language}}
+            </div>
+            <div
+              class='title1'
+              style="font-size:12px;line-height:normal;margin: .5rem 0 1rem; white-space:nowrap; overflow: hidden; text-overflow:ellipsis"
+            >
+              <a style="font-size:1.4rem;font-weight:600;line-height:1.2;color:#2e3135"> {{article.title}}</a>
+            </div>
+            <div class='abstract'>{{article.abstract}}</div>
           </div>
-          <div
-            class='title1'
-            style="font-size:12px;line-height:normal;margin: .5rem 0 1rem; white-space:nowrap; overflow: hidden; text-overflow:ellipsis"
-          >
-            <a style="font-size:1.4rem;font-weight:600;line-height:1.2;color:#2e3135"> {{article.title}}</a>
-          </div>
-          <div class='abstract'>{{article.abstract}}</div>
-        </div>
+        </router-link>
       </div>
-    </div>
+    </div> -->
 
-    <!-- <transition name="fade">
-      <div v-show="!listLoading">
+    <transition name="fade">
+      <div v-if="!listLoading">
         <span
           v-for="(article) in this.list"
           :key="article.aid"
         >
-          <el-card
-            shadow="hover"
-            style="margin-bottom: 5px; align: left"
-          >
+          <router-link :to="'/articles/'+article.aid + '?category=' + article.category">
+            <el-card
+              shadow="hover"
+              style="margin-bottom: 5px; align: left"
+            >
 
-            <div slot="header">
-              <el-row>
-                <el-col :span="16">
-                  <i
-                    class="el-icon-edit-outline"
-                    style='font-size:30px; vertical-align: middle;'
-                  ></i>
-                  <router-link :to="'/articles/'+article.aid + '?category=' + article.category">
+              <div slot="header">
+                <el-row>
+                  <el-col :span="16">
+                    <i
+                      class="el-icon-edit-outline"
+                      style='font-size:30px; vertical-align: middle;'
+                    ></i>
+
                     <div
                       class="title"
                       @click="goDetails(article.aid)"
@@ -123,50 +135,51 @@
                     >
                       {{article.title}}
                     </div>
-                  </router-link>
-                </el-col>
-                <el-col
-                  :span="8"
-                  style="text-align: right; margin-top:10px"
-                >{{ article.authors }}</el-col>
+
+                  </el-col>
+                  <el-col
+                    :span="8"
+                    style="text-align: right; margin-top:10px"
+                  >{{ article.authors }}</el-col>
+                </el-row>
+
+              </div>
+
+              <el-row style="font-size:1.0rem; color: rgb(96, 108, 113)">
+                <el-col :span="8">类别: {{article.category }}</el-col>
+                <el-col :span="8">语言: {{ article.language }}</el-col>
               </el-row>
 
-            </div>
+              <div class="text">
+                {{ article.abstract }}
+              </div>
+              <div style="font-size: 1.1rem;color: #303133;padding: 10px 0px 0px 0px">
+                <el-row>
+                  <el-col
+                    :span="8"
+                    style="padding-top: 5px"
+                  >
+                    <el-tag
+                      size="small"
+                      type="success"
+                    >{{article.articleTags}}</el-tag>
+                  </el-col>
+                  <el-col
+                    :span="16"
+                    style="text-align: right;"
+                  >
 
-            <el-row style="font-size:1.0rem; color: rgb(96, 108, 113)">
-              <el-col :span="8">类别: {{article.category }}</el-col>
-              <el-col :span="8">语言: {{ article.language }}</el-col>
-            </el-row>
-
-            <div class="text">
-              {{ article.abstract }}
-            </div>
-            <div style="font-size: 1.1rem;color: #303133;padding: 10px 0px 0px 0px">
-              <el-row>
-                <el-col
-                  :span="8"
-                  style="padding-top: 5px"
-                >
-                  <el-tag
-                    size="small"
-                    type="success"
-                  >{{article.articleTags}}</el-tag>
-                </el-col>
-                <el-col
-                  :span="16"
-                  style="text-align: right;"
-                >
-
-                  <div style="font-size: 0.9rem;line-height: 1.5;color: #606c71;">
-                    最近更新 {{ article.update_time }}
-                  </div>
-                </el-col>
-              </el-row>
-            </div>
-          </el-card>
+                    <div style="font-size: 0.9rem;line-height: 1.5;color: #606c71;">
+                      最近更新 {{ article.update_time }}
+                    </div>
+                  </el-col>
+                </el-row>
+              </div>
+            </el-card>
+          </router-link>
         </span>
       </div>
-    </transition> -->
+    </transition>
 
     <pagination
       v-show="total / listQuery.size > 1"
@@ -202,7 +215,8 @@ export default {
       listQuery: {
         page: 1,
         size: 5,
-        dbms: 'Beijing',
+        dbms: 'Hong Kong',
+        sort_by: null,
         title: null,
         category: null,
         authors: null,
@@ -225,10 +239,15 @@ export default {
       this.listQuery.authors = null
       this.listQuery.articleTags = null
       this.listQuery.language = null
+      this.listQuery.sort_by = null
       this.listQuery.page = 1
       this.fetchArticles()
     },
     addNewHandler() {},
+    recentUpdate() {
+      this.listQuery.sort_by = '-update_time'
+      this.onSearchSubmit()
+    },
     onSearchSubmit() {
       for (var prop in this.listQuery) {
         if (this.listQuery[prop] === '') {

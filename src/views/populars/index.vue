@@ -138,8 +138,9 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="created_at"
+        prop="update_time"
         width="200"
+        sortable="custom"
         label="更新时间"
       >
         <template slot-scope="scope">

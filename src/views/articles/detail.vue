@@ -24,9 +24,21 @@
                 <el-button
                   style="padding: 3px 0"
                   type="text"
-                  icon="el-icon-share"
+                  @click="agree()"
+                >
+                  <svg-icon icon-class="agree" />
+                  点赞
+                </el-button>
+                <el-button
+                  style="padding: 3px 0"
+                  type="text"
                   @click="share()"
-                >分享</el-button>
+                >
+                  <svg-icon icon-class="share" />
+                  分享
+
+                </el-button>
+
               </el-col>
             </el-row>
 
@@ -57,12 +69,6 @@
             </el-col>
 
           </el-row>
-          <!-- <el-row style="font-size:1.0rem; color: rgb(96, 108, 113)">
-            <div class="duiqi">
-              <div style="display: inline-block; margin-right:10px">类别: </div>{{ article.category }}
-              <div style="display: inline-block; margin: 0px 10px">语言: </div>{{ article.language }}
-            </div>
-          </el-row> -->
 
           <div
             class="duiqi"
@@ -76,61 +82,67 @@
                 :span="12"
                 style="padding-top: 5px"
               >
-                <div
-                  class="duiqi"
-                  style="display: inline-block;"
-                >
-                  <el-tooltip
-                    effect="dark"
-                    :content="'read '+record.readNum"
-                    placement="bottom"
-                  >
-                    <i
-                      class="el-icon-star-off"
-                      style="margin: 0px 5px 0px 0px"
-                    />
-                  </el-tooltip>
-                  {{ record.readNum }}
-                </div>
+
                 <div style="display: inline-block">
                   <el-tooltip
                     effect="dark"
-                    :content="'comment '+record.commentNum"
+                    :content="'阅读 '+record.readNum"
                     placement="bottom"
+                    style="margin: 15px 5px 0px 15px"
                   >
-                    <i
-                      class="el-icon-view"
-                      style="margin: 0px 5px 0px 15px"
-                    />
+                    <div>
+                      <svg-icon icon-class="view" />
+                      <div style="display: inline-block;">
+                        {{ record.readNum }}</div>
+                    </div>
                   </el-tooltip>
-                  {{ record.commentNum }}
                 </div>
+
                 <div style="display: inline-block">
                   <el-tooltip
                     effect="dark"
-                    :content="'agree '+record.agreeNum"
+                    :content="'评论 '+record.commentNum"
                     placement="bottom"
+                    style="margin: 0px 5px 0px 15px"
                   >
-                    <i
-                      class="el-icon-bell"
-                      style="margin: 0px 5px 0px 15px"
-                    />
+                    <div>
+                      <svg-icon icon-class="comment" />
+                      <div style="display: inline-block;">
+                        {{ record.commentNum }}</div>
+                    </div>
                   </el-tooltip>
-                  {{ record.agreeNum }}
                 </div>
+
                 <div style="display: inline-block">
                   <el-tooltip
                     effect="dark"
-                    :content="'share '+record.shareNum"
+                    :content="'点赞 '+record.agreeNum"
                     placement="bottom"
+                    style="margin: 0px 5px 0px 15px"
                   >
-                    <i
-                      class="el-icon-share"
-                      style="margin: 0px 5px 0px 15px"
-                    />
+                    <div>
+                      <svg-icon icon-class="agree" />
+                      <div style="display: inline-block;">
+                        {{ record.agreeNum }}</div>
+                    </div>
                   </el-tooltip>
-                  {{ record.shareNum }}
                 </div>
+
+                <div style="display: inline-block">
+                  <el-tooltip
+                    effect="dark"
+                    :content="'分享 '+record.shareNum"
+                    placement="bottom"
+                    style="margin: 0px 5px 0px 15px"
+                  >
+                    <div>
+                      <svg-icon icon-class="share" />
+                      <div style="display: inline-block;">
+                        {{ record.shareNum }}</div>
+                    </div>
+                  </el-tooltip>
+                </div>
+
               </el-col>
               <el-col
                 :span="12"
@@ -147,17 +159,16 @@
           <el-divider content-position="center">上次更新 {{ article.update_time }}</el-divider>
 
           <div>
-            <!-- <div style="font-size: 0.9rem;;color: #606c71; text-align: center;">
-              上次更新 {{ article.update_time }}
-            </div> -->
+
             <div class="text">
-              {{ article.text }}
+              <template>
+                <div v-html="article.text" />
+              </template>
+
             </div>
           </div>
 
         </div>
-
-        <!-- <div style="margin: 40px 0;" /> -->
 
         <div
           class="commentBox"
@@ -167,12 +178,13 @@
           <h3>评论列表</h3>
           <p v-if="record.comments == null">暂无评论，我来发表第一篇评论！</p>
           <div
+            v-for="(item, index) in record.comments"
             v-else
+            :key="index"
             class="container"
           >
             <div
-              v-for="(item, index) in record.comments"
-              :key="index"
+              v-if="item.rid > -2"
               class="comment"
             >
               <div class="info">
@@ -248,10 +260,14 @@
 
 <script>
 import { getArticle, getArticleRecord } from '@/api/article.js'
+import { newRead } from '@/api/reads.js'
+import { mapGetters } from 'vuex'
+import { formatTime } from '@/utils/index.js'
 
 export default {
   data() {
     return {
+      openTime: null,
       loading: true,
       loadingComment: true,
       article: {},
@@ -259,14 +275,102 @@ export default {
       record: {}
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
   created() {
     const aid = this.$route.params && this.$route.params.id
     const query = this.$route.query
     this.fetchData(aid, query)
+    this.openTime = Date.now()
+
+    // window.addEventListener('beforeunload', e => this.newRecord(e))
+  },
+  destroyed() {
+    var data = {}
+    data.readSequence = 1
+    this.newRecord(data)
+    // window.removeEventListener('beforeunload', e => this.newRecord(e))
   },
   methods: {
-    commitComment() {},
-    cancel() {},
+    newRecord(data, info) {
+      if (this.user == null) {
+        console.log('无用户登录')
+      } else {
+        data.uid = this.user.uid
+        data.aid = this.article.aid
+        data.region = this.user.region
+        data.category = this.article.category
+        data.readTimeLength = parseInt((Date.now() - this.openTime) / 1000)
+        this.openTime = Date.now()
+
+        newRead(data)
+          .then(response => {
+            if (response.data.rid >= 0) {
+              if (
+                this.record.comments.length > 0 &&
+                this.record.comments[0].rid === -3
+              ) {
+                this.record.comments[0].rid = response.data.rid
+              }
+
+              if (info) {
+                this.$message({
+                  message: info + '成功',
+                  type: 'success'
+                })
+              }
+            } else {
+              throw response
+              // if (info) {
+              //   this.$message({
+              //     message: info + '失败，请稍后重试',
+              //     type: 'error'
+              //   })
+              // }
+            }
+            return true
+          })
+          .catch(errors => {
+            console.log(errors)
+            if (info) {
+              this.$message({
+                message: info + '失败，请稍后重试',
+                type: 'error'
+              })
+            }
+            return false
+          })
+      }
+    },
+    commitComment() {
+      if (this.commentDetail.length < 5) {
+        this.$message({
+          message: '评论字数至少5个字哟',
+          type: 'error'
+        })
+        return
+      }
+      var data = {}
+      data.commentOrNot = 1
+      data.commentDetail = this.commentDetail
+
+      var comment = {
+        commentDetail: this.commentDetail,
+        name: this.user.name,
+        rid: -3,
+        timestamp: formatTime(Date.now())
+      }
+
+      this.newRecord(data, '评论')
+      // 更新评论列表
+
+      this.record.comments.unshift(comment)
+      this.commentDetail = null
+    },
+    cancel() {
+      this.commentDetail = null
+    },
     fetchData(aid, query) {
       this.loading = true
       getArticle(aid, query)
@@ -281,12 +385,14 @@ export default {
 
           this.article = response.data
           this.fetchRecord(aid, this.article.category)
+          this.loading = false
+          var data = {}
+          data.readOrNot = 1
+          this.newRecord(data)
         })
         .catch(() => {
           this.$router.push({ path: '/index' })
         })
-
-      this.loading = false
     },
     fetchRecord(aid, dbms) {
       this.loadingComment = true
@@ -297,10 +403,22 @@ export default {
       this.loadingComment = false
     },
     share() {
-      this.$message({
-        message: '分享成功',
-        type: 'success'
-      })
+      const data = {}
+      data.shareOrNot = 1
+      this.newRecord(data, '分享')
+      // this.$message({
+      //   message: '分享成功',
+      //   type: 'success'
+      // })
+    },
+    agree() {
+      var data = {}
+      data.agreeOrNot = 1
+      this.newRecord(data, '点赞')
+      // this.$message({
+      //   message: '点赞成功',
+      //   type: 'success'
+      // })
     }
   }
 }

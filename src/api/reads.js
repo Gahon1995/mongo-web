@@ -21,3 +21,11 @@ export function getRead(rid) {
     method: 'get'
   })
 }
+
+export function newRead(data) {
+  return request({
+    url: '/reads',
+    method: 'post',
+    data
+  })
+}

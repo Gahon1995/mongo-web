@@ -9,13 +9,14 @@
           style="margin-bottom: 20px; width: 50%; align=center"
           @tab-click="handleClick"
         >
-          <el-tab-pane
-            label="Beijing"
-            name="Beijing"
-          />
+
           <el-tab-pane
             label="Hong Kong"
             name="Hong Kong"
+          />
+          <el-tab-pane
+            label="Beijing"
+            name="Beijing"
           />
         </el-tabs>
       </div>
@@ -56,7 +57,7 @@ export default {
   },
   data() {
     return {
-      dbms: 'Beijing'
+      dbms: 'Hong Kong'
     }
   },
   methods: {

@@ -8,6 +8,14 @@ export function getArticles(query) {
   })
 }
 
+export function newArticle(data) {
+  return request({
+    url: '/articles',
+    method: 'post',
+    data
+  })
+}
+
 export function deleteArticle(id) {
   return request({
     url: '/articles/' + id,
@@ -20,6 +28,14 @@ export function getArticle(aid, query) {
     url: '/articles/' + aid,
     method: 'get',
     params: query
+  })
+}
+
+export function updateArticle(aid, data) {
+  return request({
+    url: '/articles/' + aid,
+    method: 'post',
+    data
   })
 }
 

@@ -97,24 +97,23 @@
             type="primary"
             @click="onSearchSubmit"
           >查询</el-button>
-        </el-form-item>
+          <!-- </el-form-item>
         <el-form-item
           id="clear-item"
           class="fr"
-        >
+          > -->
           <el-button
             type="warning"
             @click="resetSearch"
           >重置</el-button>
-        </el-form-item>
+          <!-- </el-form-item>
         <el-form-item
           id="addNew-item"
           class="fr"
-        >
-          <el-button
-            type="primary"
-            @click="addNewHandler"
-          >新增</el-button>
+        > -->
+          <router-link to="/articles/create">
+            <el-button type="primary">新增</el-button>
+          </router-link>
         </el-form-item>
       </el-form>
     </section>
@@ -125,6 +124,7 @@
       element-loading-text="Loading"
       stripe
       highlight-current-row
+      @sort-change="sortChange"
     >
       <el-table-column
         type="index"
@@ -227,14 +227,17 @@
       <el-table-column
         label="更新时间"
         align="center"
+        prop="update_time"
+        sortable="custom"
         width="200px"
       >
         <template slot-scope="scope">{{ scope.row.update_time }}</template>
       </el-table-column>
       <el-table-column
         align="center"
-        prop="created_at"
+        prop="timestamp"
         width="200px"
+        sortable="custom"
         label="创建时间"
       >
         <template slot-scope="scope">
@@ -244,9 +247,16 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="80"
+        width="160"
       >
+
         <template slot-scope="scope">
+          <router-link :to="'/articles/edit/'+scope.row.aid+'?category='+scope.row.category">
+            <el-button
+              type="primary"
+              size="mini"
+            >更改</el-button>
+          </router-link>
           <el-button
             size="mini"
             type="danger"
@@ -293,6 +303,7 @@ export default {
         title: null,
         category: null,
         authors: null,
+        sort_by: null,
         articleTags: null,
         language: null
       }
@@ -302,6 +313,16 @@ export default {
     this.fetchArticles()
   },
   methods: {
+    sortChange(column) {
+      console.log(column.prop)
+      this.listQuery.sort_by = column.prop
+      if (column.order === 'descending') {
+        this.listQuery.sort_by = '-' + column.prop
+      }
+      // this.listQuery.sort_by = order
+      // console.log(this.listQuery)
+      this.fetchArticles()
+    },
     resetSearch() {
       this.listQuery.title = null
       this.listQuery.category = null

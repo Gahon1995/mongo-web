@@ -1,7 +1,12 @@
 <template>
-  <div class="popular">
-    <div align="center">
-      <!-- <el-tabs
+  <div>
+    <sticky :sticky-top="20">
+      <div
+        class="popular"
+        name='popular'
+      >
+        <div align="center">
+          <!-- <el-tabs
       v-model="listQuery.level"
       :stretch="true"
       style="margin-bottom: 20px; width: 50%; align=center"
@@ -21,71 +26,77 @@
       />
     </el-tabs> -->
 
-      <el-button-group>
-        <el-button
-          name="daily"
-          plain
-          :type="buttons.btn1"
-          @click="dailyPopular"
-        >
-          今日热门
-        </el-button>
-        <el-button
-          name="weekly"
-          plain
-          :type="buttons.btn2"
-          @click="weeklyPopular"
-        >
-          一周热门
-        </el-button>
-        <el-button
-          name="monthly"
-          plain
-          :type="buttons.btn3"
-          @click="monthlyPopular"
-        >
-          本月热门
-        </el-button>
-      </el-button-group>
-    </div>
+          <el-button-group>
+            <el-button
+              name="daily"
+              plain
+              :type="buttons.btn1"
+              @click="dailyPopular"
+            >
+              今日热门
+            </el-button>
+            <el-button
+              name="weekly"
+              plain
+              :type="buttons.btn2"
+              @click="weeklyPopular"
+            >
+              一周热门
+            </el-button>
+            <el-button
+              name="monthly"
+              plain
+              :type="buttons.btn3"
+              @click="monthlyPopular"
+            >
+              本月热门
+            </el-button>
+          </el-button-group>
+        </div>
 
-    <el-card
-      style="margin-top:30px; max-width:800px;margin:30px auto;"
-      :v-loading='loading'
-    >
-      <!-- <transition-group
+        <el-card
+          style="margin-top:30px; max-width:800px;margin:30px auto;"
+          :v-loading='loading'
+        >
+          <!-- <transition-group
         name="list-complete"
         tag="p"
       > -->
-      <!-- <div v-show="!loading"> -->
-      <el-divider key="dividere"></el-divider>
-      <div
-        v-for="(item, index) in toplist"
-        :key="item.aid"
-        class="list-complete-item"
-      >
-        <el-row style="margin-left: 30px">
-          <router-link :to="'/articles/'+item.aid + '?category=' + item.category">
-            <el-col
-              :span="4"
-              style="font-size: 1.2rem;font-style: italic"
-            > {{index + 1 }}. </el-col>
-            <el-col :span="20">{{ item.title }}</el-col>
-          </router-link>
-        </el-row>
-        <el-divider key="divider + item.aid"></el-divider>
-      </div>
-      <!-- </div> -->
-      <!-- </transition-group> -->
-    </el-card>
+          <!-- <div v-show="!loading"> -->
+          <el-divider key="dividere"></el-divider>
+          <div
+            v-for="(item, index) in toplist"
+            :key="item.aid"
+            class="list-complete-item"
+          >
+            <el-row style="margin-left: 30px">
+              <router-link :to="'/articles/'+item.aid + '?category=' + item.category">
+                <el-col
+                  :span="4"
+                  style="font-size: 1.2rem;font-style: italic"
+                > {{index + 1 }}. </el-col>
+                <el-col :span="20">{{ item.title }}</el-col>
+              </router-link>
+            </el-row>
+            <el-divider key="divider + item.aid"></el-divider>
+          </div>
+          <!-- </div> -->
+          <!-- </transition-group> -->
+        </el-card>
 
+      </div>
+    </sticky>
   </div>
 </template>
 
 <<script>
+import Sticky from '@/components/Sticky'
 import { getPublicPopulars } from '@/api/populars.js'
 
 export default {
+  components:{
+    Sticky
+  },
   data(){
     return {
       loading: false,
@@ -96,7 +107,7 @@ export default {
       },
       listQuery:{
         level: 'daily',
-        dbms: 'Beijing',
+        dbms: 'Hong Kong',
         t: Date.parse(new Date(new Date(1516204800000).setHours(0, 0, 0, 0)))
       },
       toplist:[
@@ -166,7 +177,7 @@ export default {
   // left: 0px;
   // right: 0px;
   // bottom: 0px;
-  margin-top: 100px;
+  // margin-top: 100px;
 }
 .list-complete-item {
   transition: all 1s;

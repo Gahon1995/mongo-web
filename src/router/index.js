@@ -92,9 +92,11 @@ export const constantRoutes = [{
 {
   path: '/articles',
   component: Layout,
-  redirect: '/articles/info',
+  redirect: '/articles/list',
+  name: '文章',
+
   children: [{
-    path: 'info',
+    path: 'list',
     name: '文章管理',
     component: () => import('@/views/articles/index'),
     meta: {
@@ -102,6 +104,21 @@ export const constantRoutes = [{
       icon: 'dashboard'
     }
   },
+  {
+    path: 'create',
+    component: () => import('@/views/articles/create'),
+    name: '创建文章',
+    hidden: true,
+    meta: { title: 'Create Article', icon: 'edit' }
+  },
+  {
+    path: 'edit/:id(\\d+)?*',
+    component: () => import('@/views/articles/edit'),
+    name: '编辑文章',
+    meta: { title: '编辑文章', noCache: true, activeMenu: '/articles/list' },
+    hidden: true
+  },
+
   {
     path: ':id(\\d+)',
     name: '文章详情',
