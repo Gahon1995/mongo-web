@@ -63,23 +63,28 @@
         tag="p"
       > -->
           <!-- <div v-show="!loading"> -->
-          <el-divider key="dividere"></el-divider>
-          <div
-            v-for="(item, index) in toplist"
-            :key="item.aid"
-            class="list-complete-item"
-          >
-            <el-row style="margin-left: 30px">
-              <router-link :to="'/articles/'+item.aid + '?category=' + item.category">
-                <el-col
-                  :span="4"
-                  style="font-size: 1.2rem;font-style: italic"
-                > {{index + 1 }}. </el-col>
-                <el-col :span="20">{{ item.title }}</el-col>
-              </router-link>
-            </el-row>
-            <el-divider key="divider + item.aid"></el-divider>
-          </div>
+          <template v-if="toplist.length > 0">
+            <el-divider key="dividere"></el-divider>
+            <div
+              v-for="(item, index) in toplist"
+              :key="item.aid"
+              class="list-complete-item"
+            >
+              <el-row style="margin-left: 30px">
+                <router-link :to="'/articles/'+item.aid + '?category=' + item.category">
+                  <el-col
+                    :span="4"
+                    style="font-size: 1.2rem;font-style: italic"
+                  > {{index + 1 }}. </el-col>
+                  <el-col :span="20">{{ item.title }}</el-col>
+                </router-link>
+              </el-row>
+              <el-divider key="divider + item.aid"></el-divider>
+            </div>
+          </template>
+          <template v-else>
+            <div style="text-align: center">暂无热门数据</div>
+          </template>
           <!-- </div> -->
           <!-- </transition-group> -->
         </el-card>

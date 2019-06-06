@@ -30,154 +30,182 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [{
-  path: '/login',
-  component: () => import('@/views/login/index'),
-  hidden: true
-},
-
-{
-  path: '/404',
-  component: () => import('@/views/404'),
-  hidden: true
-},
-
-{
-  path: '/',
-  component: Layout,
-  redirect: '/index',
-  // meta: {
-  //   name: '主页'
-  // },
-  children: [{
-    path: 'index',
-    name: '主页',
-    component: () => import('@/views/public/index'),
-    meta: {
-      title: '主页',
-      icon: 'dashboard'
-    }
-  }]
-},
-{
-  path: '/dashboard',
-  component: Layout,
-  redirect: '/dashboard/index',
-  children: [{
-    path: 'index',
-    name: 'Dashboard',
-    component: () => import('@/views/dashboard/index'),
-    meta: {
-      title: 'Dashboard',
-      icon: 'dashboard'
-    }
-  }]
-},
-
-{
-  path: '/users',
-  component: Layout,
-  redirect: '/users/info',
-  children: [{
-    path: 'info',
-    name: '用户管理',
-    component: () => import('@/views/users/index'),
-    meta: {
-      title: '用户管理',
-      icon: 'example'
-    }
-  }]
-},
-
-{
-  path: '/articles',
-  component: Layout,
-  redirect: '/articles/list',
-  name: '文章',
-
-  children: [{
-    path: 'list',
-    name: '文章管理',
-    component: () => import('@/views/articles/index'),
-    meta: {
-      title: '文章管理',
-      icon: 'dashboard'
-    }
-  },
+export const constantRoutes = [
   {
-    path: 'create',
-    component: () => import('@/views/articles/create'),
-    name: '创建文章',
-    hidden: true,
-    meta: { title: 'Create Article', icon: 'edit' }
-  },
-  {
-    path: 'edit/:id(\\d+)?*',
-    component: () => import('@/views/articles/edit'),
-    name: '编辑文章',
-    meta: { title: '编辑文章', noCache: true, activeMenu: '/articles/list' },
+    path: '/login',
+    component: () => import('@/views/login/index'),
     hidden: true
   },
 
   {
-    path: ':id(\\d+)',
-    name: '文章详情',
-    component: () => import('@/views/articles/detail'),
-    hidden: true,
-    meta: {
-      title: '文章详情',
-      icon: 'dashboard'
-    }
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  },
+
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/index',
+    // meta: {
+    //   name: '主页'
+    // },
+    children: [{
+      path: 'index',
+      name: '主页',
+      component: () => import('@/views/public/index'),
+      meta: {
+        title: '主页',
+        icon: 'dashboard'
+      }
+    }]
   }
-  ]
-},
-
-{
-  path: '/reads',
-  component: Layout,
-  redirect: '/reads/info',
-  children: [{
-    path: 'info',
-    name: '阅读记录',
-    component: () => import('@/views/reads/index'),
-    meta: {
-      title: '阅读记录',
-      icon: 'nested'
-    }
-  }]
-},
-
-{
-  path: '/populars',
-  component: Layout,
-  redirect: '/populars/info',
-  children: [{
-    path: 'info',
-    name: '流行列表',
-    component: () => import('@/views/populars/index'),
-    meta: {
-      title: '流行列表',
-      icon: 'nested'
-    }
-  }]
-},
-
-// 404 page must be placed at the end !!!
-{
-  path: '*',
-  redirect: '/404',
-  hidden: true
-}
 ]
 
-const createRouter = () =>
-  new Router({
-    // mode: 'history', // require service support
-    scrollBehavior: () => ({
-      y: 0
-    }),
-    routes: constantRoutes
-  })
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
+
+  {
+    path: '/dashboard',
+    component: Layout,
+    redirect: '/dashboard/index',
+    meta: {
+      roles: ['admin']
+    },
+    children: [{
+      path: 'index',
+      name: 'Dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: {
+        title: 'Dashboard',
+        icon: 'dashboard'
+      }
+    }]
+  },
+
+  {
+    path: '/users',
+    component: Layout,
+    redirect: '/users/list',
+    // meta: {
+    //   roles: ['admin']
+    // },
+    children: [{
+      path: 'list',
+      name: '用户管理',
+      component: () => import('@/views/users/index'),
+      meta: {
+        title: '用户管理',
+        icon: 'example',
+        roles: ['admin']
+      }
+    }, {
+      path: 'info',
+      component: () => import('@/views/users/info'),
+      // component: () => import('@/components/Region/index'),
+
+      hidden: true,
+      meta: {
+        title: '用户信息',
+        icon: 'example',
+        roles: ['admin', 'user']
+      }
+    }
+    ]
+  },
+
+  {
+    path: '/articles',
+    component: Layout,
+    redirect: '/articles/list',
+    name: '文章',
+    // meta: {
+    //   roles: ['admin']
+    // },
+    children: [{
+      path: 'list',
+      name: '文章管理',
+      component: () => import('@/views/articles/index'),
+      meta: {
+        title: '文章管理',
+        icon: 'dashboard', roles: ['admin']
+      }
+    },
+    {
+      path: 'create',
+      component: () => import('@/views/articles/create'),
+      name: '创建文章',
+      hidden: true,
+      meta: { title: 'Create Article', icon: 'edit', roles: ['admin', 'user'] }
+    },
+    {
+      path: 'edit/:id(\\d+)?*',
+      component: () => import('@/views/articles/edit'),
+      name: '编辑文章',
+      meta: { title: '编辑文章', noCache: true, activeMenu: '/articles/list', roles: ['admin', 'user'] },
+      hidden: true
+    },
+
+    {
+      path: ':id(\\d+)',
+      name: '文章详情',
+      component: () => import('@/views/articles/detail'),
+      hidden: true,
+      meta: {
+        title: '文章详情',
+        icon: 'dashboard', roles: ['admin', 'user']
+      }
+    }
+    ]
+  },
+
+  {
+    path: '/reads',
+    component: Layout,
+    redirect: '/reads/list',
+    meta: {
+      roles: ['admin']
+    },
+    children: [{
+      path: 'list',
+      name: '阅读记录',
+      component: () => import('@/views/reads/index'),
+      meta: {
+        title: '阅读记录',
+        icon: 'nested'
+      }
+    }]
+  },
+
+  {
+    path: '/populars',
+    component: Layout,
+    redirect: '/populars/list',
+    meta: {
+      roles: ['admin']
+    },
+    children: [{
+      path: 'list',
+      name: '流行列表',
+      component: () => import('@/views/populars/index'),
+      meta: {
+        title: '流行列表',
+        icon: 'nested'
+      }
+    }]
+  },
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+const createRouter = () => new Router({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRoutes
+})
 
 const router = createRouter()
 

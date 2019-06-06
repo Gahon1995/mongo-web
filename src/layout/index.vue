@@ -1,13 +1,36 @@
 <template>
-  <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
-    <div class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
+  <div
+    :class="classObj"
+    class="app-wrapper"
+  >
+    <div
+      v-if="device==='mobile'&&sidebar.opened"
+      class="drawer-bg"
+      @click="handleClickOutside"
+    />
+    <sidebar
+      v-if="isAdmin"
+      class="sidebar-container"
+    /><template v-if="isAdmin">
+      <div class="main-container">
+
+        <div :class="{'fixed-header':fixedHeader}">
+          <navbar :is-admin="isAdmin" />
+        </div>
+        <app-main />
       </div>
-      <app-main />
-    </div>
+    </template>
+    <template v-else>
+      <div
+        class="main-container"
+        style="margin-left: 0px"
+      >
+        <div :class="{'fixed-header':fixedHeader}">
+          <navbar :is-admin="isAdmin" />
+        </div>
+        <app-main />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -24,6 +47,17 @@ export default {
   },
   mixins: [ResizeMixin],
   computed: {
+    isAdmin() {
+      const roles = this.$store.getters.roles
+      var admin = false
+      if (roles.length > 0 && roles.indexOf('admin') > -1) {
+        admin = true
+      }
+
+      console.log(admin)
+
+      return admin
+    },
     sidebar() {
       return this.$store.state.app.sidebar
     },
@@ -51,43 +85,43 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/mixin.scss";
-  @import "~@/styles/variables.scss";
+@import "~@/styles/mixin.scss";
+@import "~@/styles/variables.scss";
 
-  .app-wrapper {
-    @include clearfix;
-    position: relative;
-    height: 100%;
-    width: 100%;
-    &.mobile.openSidebar{
-      position: fixed;
-      top: 0;
-    }
-  }
-  .drawer-bg {
-    background: #000;
-    opacity: 0.3;
-    width: 100%;
-    top: 0;
-    height: 100%;
-    position: absolute;
-    z-index: 999;
-  }
-
-  .fixed-header {
+.app-wrapper {
+  @include clearfix;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  &.mobile.openSidebar {
     position: fixed;
     top: 0;
-    right: 0;
-    z-index: 9;
-    width: calc(100% - #{$sideBarWidth});
-    transition: width 0.28s;
   }
+}
+.drawer-bg {
+  background: #000;
+  opacity: 0.3;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
+}
 
-  .hideSidebar .fixed-header {
-    width: calc(100% - 54px)
-  }
+.fixed-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  width: calc(100% - #{$sideBarWidth});
+  transition: width 0.28s;
+}
 
-  .mobile .fixed-header {
-    width: 100%;
-  }
+.hideSidebar .fixed-header {
+  width: calc(100% - 54px);
+}
+
+.mobile .fixed-header {
+  width: 100%;
+}
 </style>

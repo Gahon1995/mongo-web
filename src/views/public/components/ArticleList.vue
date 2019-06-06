@@ -2,7 +2,70 @@
   <div class="app-container">
     <div align="center">
 
-      <section id="search-title">
+      <div
+        class="filter-container"
+        style="margin-bottom: 20px"
+      >
+        <el-input
+          v-model="listQuery.title"
+          placeholder="标题"
+          style="width: 150px; margin-bottom:10px"
+          class="filter-item"
+          @keyup.enter.native="onSearchSubmit"
+        />
+        <el-input
+          v-model="listQuery.authors"
+          placeholder="作者"
+          style="width: 100px;"
+          class="filter-item"
+          @keyup.enter.native="onSearchSubmit"
+        />
+        <el-select
+          v-model="listQuery.category"
+          @change="onSearchSubmit"
+          placeholder="类别"
+          style="width: 90px"
+          class="filter-item"
+        >
+          <el-option
+            v-for="item in categoryOptions"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          />
+        </el-select>
+
+        <el-button
+          class="filter-item"
+          type="primary"
+          style="margin-left: 10px;"
+          icon="el-icon-search"
+          @click="onSearchSubmit"
+        >
+          搜索
+        </el-button>
+        <el-row style="display: inline-block">
+          <el-button
+            class="filter-item"
+            style="margin-left: 10px;"
+            type="warning"
+            icon="el-icon-edit"
+            @click="resetSearch"
+          >
+            重置
+          </el-button>
+          <el-button
+            class="filter-item"
+            type="success"
+            icon="el-icon-download"
+            @click="recentUpdate"
+          >
+            最近更新
+          </el-button>
+        </el-row>
+      </div>
+
+      <!-- <section id="search-title">
 
         <el-form
           :inline="true"
@@ -56,11 +119,7 @@
                 type="primary"
                 @click="onSearchSubmit"
               >查询</el-button>
-              <!-- </el-form-item>
-          <el-form-item
-            id="clear-item"
-            class="fr"
-          > -->
+
               <el-button
                 type="warning"
                 @click="resetSearch"
@@ -71,13 +130,9 @@
               >最近更细</el-button>
             </el-form-item>
           </el-row>
-          <el-form-item
-            id="addNew-item"
-            class="fr"
-          >
-          </el-form-item>
+
         </el-form>
-      </section>
+      </section> -->
     </div>
 
     <!-- <div v-if="!listLoading">
@@ -109,7 +164,7 @@
     </div> -->
 
     <transition name="fade">
-      <div v-if="!listLoading">
+      <div v-loading="listLoading">
         <span
           v-for="(article) in this.list"
           :key="article.aid"
@@ -223,7 +278,12 @@ export default {
         articleTags: null,
         language: null,
         detail: '0'
-      }
+      },
+      categoryOptions: [
+        { name: '全部', value: null },
+        { name: 'science', value: 'science' },
+        { name: 'technology', value: 'technology' }
+      ]
     }
   },
   mounted() {
