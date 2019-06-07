@@ -25,7 +25,7 @@
         :model="listQuery"
         class="demo-form-inline"
       >
-        <el-form-item label="title:">
+        <el-form-item label="标题:">
           <el-input
             v-model="listQuery.title"
             type="text"
@@ -53,7 +53,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="authors:">
+        <el-form-item label="作者:">
           <el-input
             v-model="listQuery.authors"
             type="text"
@@ -61,18 +61,18 @@
             placeholder="作者"
           />
         </el-form-item>
-        <el-form-item label="articleTags:">
+        <el-form-item label="Tags:">
           <el-input
             v-model="listQuery.articleTags"
             type="text"
             style="width:150px"
-            placeholder="articleTags"
+            placeholder="Tags"
           />
         </el-form-item>
-        <el-form-item label="类别:">
+        <el-form-item label="语种:">
           <el-select
             v-model="listQuery.language"
-            placeholder="类别"
+            placeholder="语种"
             style="width:100px"
           >
             <el-option

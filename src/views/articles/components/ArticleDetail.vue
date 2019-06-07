@@ -323,9 +323,9 @@ export default {
           // this.postForm.abstract += `   Article Id:${this.postForm.id}`
 
           // set tagsview title
-          this.dynamicTags =
-            this.postForm.articleTags !== '' &&
-            this.postForm.articleTags.split(',')
+          if (this.postForm.articleTags !== '') {
+            this.dynamicTags = this.postForm.articleTags.split(',')
+          }
           // this.setTagsViewTitle()
 
           // set page title
