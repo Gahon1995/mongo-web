@@ -220,7 +220,7 @@
 </template>
 
 <script>
-import { getUsers, deleteUser } from '@/api/admin.js'
+import { getUsers, deleteUser, updateUser, register } from '@/api/user.js'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import EditUser from './components/EditUser'
 
@@ -261,12 +261,30 @@ export default {
   methods: {
     HandleSubmit(info) {
       console.log(this.dialogUser)
-      for (const v of this.list) {
-        if (v.uid === info.uid) {
-          const index = this.list.indexOf(v)
-          this.list.splice(index, 1, info)
-          break
-        }
+
+      if (this.dialogAction === 'edit') {
+        updateUser(info.uid, info).then(response => {
+          for (const v of this.list) {
+            if (v.uid === info.uid) {
+              const index = this.list.indexOf(v)
+              this.list.splice(index, 1, info)
+              break
+            }
+          }
+          this.dialogVisiable = false
+        })
+      } else if (this.dialogAction === 'register') {
+        register(info).then(response => {
+          if (response.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '添加成功'
+            })
+            this.dialogVisiable = false
+          } else {
+            this.dialogVisiable = true
+          }
+        })
       }
     },
     resetSearch() {

@@ -303,11 +303,22 @@
         <el-divider />
       </el-form>
     </el-card>
+
+    <edit-user
+      v-if="dialogVisiable"
+      :visiable.sync="dialogVisiable"
+      :post-form="dialogUser"
+      :action="dialogAction"
+      :title="dialogTitle"
+      @submit="HandleSubmit"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
+import EditUser from './EditUser'
+import { updateUser, getInfo } from '@/api/user.js'
 
 // const postForm = {
 //   name: null,
@@ -327,8 +338,13 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'MyInfo',
+  components: { EditUser },
   data() {
     return {
+      dialogAction: 'edit',
+      dialogVisiable: false,
+      dialogUser: null,
+      dialogTitle: '更新个人信息',
       edit: false,
       postForm: {
         name: null,
@@ -348,14 +364,33 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user'])
+    // user: {
+    //   get() {
+    //     return this.$store.getters.user
+    //   }
+    // }
+    // ...mapGetters(['user'])
   },
   created() {
     this.getUserInfo()
   },
   methods: {
     EditInfo() {
-      this.edit = true
+      // this.edit = true
+      this.dialogUser = Object.assign({}, this.postForm)
+      this.dialogVisiable = true
+    },
+    HandleSubmit(info) {
+      console.log(info)
+      updateUser(info.uid, info).then(response => {
+        // this.$router.replace({
+        //   path: '/users/info'
+        // })
+        if (response.code === 200) {
+          this.postForm = info
+          this.dialogVisiable = false
+        }
+      })
     },
     cancel() {
       this.edit = false
@@ -363,25 +398,14 @@ export default {
     },
     updateInfo() {
       this.edit = false
-      delete this.postForm['timestamp']
-      delete this.postForm['name']
+      // delete this.postForm['timestamp']
+      // delete this.postForm['name']
       console.log(this.postForm)
     },
     getUserInfo() {
-      this.postForm.uid = this.user.uid
-      this.postForm.name = this.user.name
-      this.postForm.pwd = this.user.pwd
-      this.postForm.gender = this.user.gender
-      this.postForm.email = this.user.email
-      this.postForm.phone = this.user.phone
-      this.postForm.dept = this.user.dept
-      this.postForm.grade = this.user.grade
-      this.postForm.language = this.user.language
-      this.postForm.region = this.user.region
-      this.postForm.role = this.user.role
-      this.postForm.preferTags = this.user.preferTags
-      this.postForm.obtainedCredits = this.user.obtainedCredits
-      this.postForm.timestamp = this.user.timestamp
+      getInfo().then(responese => {
+        this.postForm = responese.data
+      })
     }
   }
 }
@@ -407,21 +431,21 @@ export default {
   font-size: 20px;
   padding-left: 30px;
 }
-.el-form-item__label {
-  font-size: 20px;
-}
+// .el-form-item__label {
+//   font-size: 20px;
+// }
 
-.edit-input {
-  font-size: 20px;
-  width: 200px;
-}
+// .edit-input {
+//   font-size: 20px;
+//   width: 200px;
+// }
 .label {
   padding: 0px 15px;
 }
 
-.el-form-item {
-  margin-bottom: 0px;
-}
+// .el-form-item {
+//   margin-bottom: 0px;
+// }
 .el-divider--horizontal {
   width: 80%;
   margin: 10px auto;
