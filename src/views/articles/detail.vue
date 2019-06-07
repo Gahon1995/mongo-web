@@ -158,14 +158,9 @@
 
           <el-divider content-position="center">上次更新 {{ article.update_time }}</el-divider>
 
-          <div>
+          <div class="content">
+            <div v-html="article.text" />
 
-            <div class="text">
-              <template>
-                <div v-html="article.text" />
-              </template>
-
-            </div>
           </div>
 
         </div>
@@ -446,7 +441,7 @@ export default {
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
   padding: 0 24px 16px;
 }
-.text {
+.content {
   word-wrap: break-word;
   margin: 0 0 16px;
   font-size: 16px;
