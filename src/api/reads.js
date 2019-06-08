@@ -29,3 +29,11 @@ export function newRead(data) {
     data
   })
 }
+
+export function getReadHistory(uid, query) {
+  return request({
+    url: '/reads/history/' + uid,
+    method: 'get',
+    params: query
+  })
+}

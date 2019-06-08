@@ -24,7 +24,7 @@
           v-model="listQuery.category"
           @change="onSearchSubmit"
           placeholder="类别"
-          style="width: 90px"
+          style="width: 120px"
           class="filter-item"
         >
           <el-option
@@ -65,103 +65,7 @@
         </el-row>
       </div>
 
-      <!-- <section id="search-title">
-
-        <el-form
-          :inline="true"
-          :model="listQuery"
-          class="demo-form-inline"
-        >
-          <el-row>
-            <el-form-item label="title:">
-              <el-input
-                v-model="listQuery.title"
-                type="text"
-                style="width:120px"
-                placeholder="请输入title"
-              />
-            </el-form-item>
-            <el-form-item label="类别:">
-              <el-select
-                v-model="listQuery.category"
-                placeholder="类别"
-                style="width:120px"
-              >
-                <el-option
-                  label="全部"
-                  :value="null"
-                />
-                <el-option
-                  label="science"
-                  value="science"
-                />
-                <el-option
-                  label="technology"
-                  value="technology"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="authors:">
-              <el-input
-                v-model="listQuery.authors"
-                type="text"
-                style="width:100px"
-                placeholder="作者"
-              />
-            </el-form-item>
-          </el-row>
-          <el-row>
-            <el-form-item
-              id="submit-item"
-              style="margin-left:20px"
-            >
-              <el-button
-                type="primary"
-                @click="onSearchSubmit"
-              >查询</el-button>
-
-              <el-button
-                type="warning"
-                @click="resetSearch"
-              >重置</el-button>
-              <el-button
-                type="success"
-                @click="recentUpdate"
-              >最近更细</el-button>
-            </el-form-item>
-          </el-row>
-
-        </el-form>
-      </section> -->
     </div>
-
-    <!-- <div v-if="!listLoading">
-      <div
-        v-for="(article) in this.list"
-        :key="article.aid"
-      >
-        <router-link :to="'/articles/'+article.aid + '?category=' + article.category">
-          <div
-            class="art"
-            style="background: #ffffff;padding:1.5rem 2rem;margin-bottom:5px"
-          >
-            <div
-              class="head-info"
-              style="font-size: 1rem;color: #b2bac2"
-            >
-              {{ article.authors}} &nbsp;&nbsp;· {{article.category}} &nbsp;&nbsp;· &nbsp;&nbsp; {{article.language}}
-            </div>
-            <div
-              class='title1'
-              style="font-size:12px;line-height:normal;margin: .5rem 0 1rem; white-space:nowrap; overflow: hidden; text-overflow:ellipsis"
-            >
-              <a style="font-size:1.4rem;font-weight:600;line-height:1.2;color:#2e3135"> {{article.title}}</a>
-            </div>
-            <div class='abstract'>{{article.abstract}}</div>
-          </div>
-        </router-link>
-      </div>
-    </div> -->
 
     <transition name="fade">
       <div v-loading="listLoading">
@@ -233,6 +137,18 @@
             </el-card>
           </router-link>
         </span>
+        <div
+          v-if="!list || list.length <= 0"
+          style="max-width:400px;margin:0px auto"
+        >
+          <el-alert
+            title="未找到相关的文章"
+            type="error"
+            center
+            :closable='false'
+          >
+          </el-alert>
+        </div>
       </div>
     </transition>
 

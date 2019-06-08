@@ -11,7 +11,7 @@
         >发表新文章</el-button>
       </router-link>
     </div>
-    <div v-if="list.length >0">
+    <div v-if="list && list.length > 0">
       <div align="center">
 
         <div
