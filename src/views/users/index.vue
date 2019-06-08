@@ -210,6 +210,7 @@
 
     </div>
     <edit-user
+      v-if="dialogVisiable"
       :visiable.sync="dialogVisiable"
       :post-form="dialogUser"
       :action="dialogAction"

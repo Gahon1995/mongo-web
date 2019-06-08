@@ -341,9 +341,10 @@ export default {
     }
   },
   created() {
-    if (this.postForm && this.postForm.preferTags !== '') {
-      this.dynamicTags = this.postForm.preferTags.split(',')
-    }
+    // if (this.postForm && this.postForm.preferTags !== '') {
+    this.dynamicTags =
+      this.postForm.preferTags !== '' && this.postForm.preferTags.split(',')
+    // }
   },
   methods: {
     Submit() {
