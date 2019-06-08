@@ -10,7 +10,7 @@ export function getPopulars(query) {
 
 export function getPublicPopulars(query) {
   return request({
-    url: '/public/populars',
+    url: '/populars/today',
     method: 'get',
     params: query
   })

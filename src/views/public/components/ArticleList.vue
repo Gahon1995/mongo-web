@@ -166,7 +166,7 @@
     <transition name="fade">
       <div v-loading="listLoading">
         <span
-          v-for="(article) in this.list"
+          v-for="(article) in list"
           :key="article.aid"
         >
           <router-link :to="'/articles/'+article.aid + '?category=' + article.category">

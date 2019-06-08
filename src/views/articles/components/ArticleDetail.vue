@@ -66,6 +66,7 @@
                   >
                     <el-input
                       v-model="postForm.authors"
+                      :disabled="true && user.name !== 'admin'"
                       placeholder="请输入作者名字"
                     />
                   </el-form-item>
@@ -201,6 +202,7 @@ import Tinymce from '@/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { getArticle, newArticle, updateArticle } from '@/api/article'
+import { mapGetters } from 'vuex'
 // import Warning from './Warning'
 // import {
 //   CommentDropdown,
@@ -291,7 +293,8 @@ export default {
       set(val) {
         this.postForm.display_time = new Date(val)
       }
-    }
+    },
+    ...mapGetters(['user'])
   },
   created() {
     if (this.isEdit) {
@@ -301,6 +304,9 @@ export default {
       this.fetchData(aid, category)
     } else {
       this.postForm = Object.assign({}, defaultForm)
+      // if (this.user.name !== 'admin') {
+      this.postForm.authors = this.user.name
+      // }
     }
 
     // Why need to make a copy of this.$route here?

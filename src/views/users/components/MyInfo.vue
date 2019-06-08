@@ -304,14 +304,15 @@
       </el-form>
     </el-card>
 
-    <edit-user
-      v-if="dialogVisiable"
-      :visiable.sync="dialogVisiable"
-      :post-form="dialogUser"
-      :action="dialogAction"
-      :title="dialogTitle"
-      @submit="HandleSubmit"
-    />
+    <template v-if="dialogVisiable">
+      <edit-user
+        :visiable.sync="dialogVisiable"
+        :post-form="dialogUser"
+        :action="dialogAction"
+        :title="dialogTitle"
+        @submit="HandleSubmit"
+      />
+    </template>
   </div>
 </template>
 
@@ -411,9 +412,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .info {
-  .form-item {
+  ::v-deep .form-item {
     font-size: 20px;
     margin: 10px;
     .label {
@@ -427,11 +428,11 @@ export default {
 
   max-width: 600px;
 }
-.el-form-item__content {
+::v-deep .el-form-item__content {
   font-size: 20px;
   padding-left: 30px;
 }
-// .el-form-item__label {
+// ::v-deep .el-form-item__label {
 //   font-size: 20px;
 // }
 
