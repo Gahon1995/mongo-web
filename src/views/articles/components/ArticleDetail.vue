@@ -57,97 +57,122 @@
 
             <div class="postInfo-container">
               <el-row>
-                <el-col :span="6">
-                  <el-form-item
-                    label-width="50px"
-                    label="作者:"
-                    prop="authors"
-                    class="postInfo-container-item"
-                  >
-                    <el-input
-                      v-model="postForm.authors"
-                      :disabled="true && user.name !== 'admin'"
-                      placeholder="请输入作者名字"
-                    />
-                  </el-form-item>
-                </el-col>
+                <el-col :span="12">
+                  <el-row>
+                    <el-col :span="6">
+                      <el-form-item
+                        label-width="50px"
+                        label="作者:"
+                        prop="authors"
+                        class="postInfo-container-item"
+                      >
+                        <el-input
+                          v-model="postForm.authors"
+                          :disabled="true && user.name !== 'admin'"
+                          placeholder="请输入作者名字"
+                        />
+                      </el-form-item>
+                    </el-col>
 
-                <el-col :span="6">
-                  <el-form-item
-                    label-width="50px"
-                    label="类别:"
-                    prop="category"
-                    class="postInfo-container-item"
-                  >
-                    <el-select
-                      v-model="postForm.category"
-                      filterable
-                      :disabled="isEdit"
-                      default-first-option
-                      placeholder="请选择"
-                    >
-                      <el-option
-                        v-for="(item,index) in categoryList"
-                        :key="item+index"
-                        :label="item"
-                        :value="item"
-                      />
-                    </el-select>
-                  </el-form-item>
+                    <el-col :span="6">
+                      <el-form-item
+                        label-width="50px"
+                        label="类别:"
+                        prop="category"
+                        class="postInfo-container-item"
+                      >
+                        <el-select
+                          v-model="postForm.category"
+                          filterable
+                          :disabled="isEdit"
+                          default-first-option
+                          placeholder="请选择"
+                        >
+                          <el-option
+                            v-for="(item,index) in categoryList"
+                            :key="item+index"
+                            :label="item"
+                            :value="item"
+                          />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="6">
+                      <el-form-item
+                        label-width="50px"
+                        label="语言:"
+                        prop="language"
+                        class="postInfo-container-item"
+                      >
+                        <el-select
+                          v-model="postForm.language"
+                          filterable
+                          default-first-option
+                          placeholder="请选择"
+                        >
+                          <el-option
+                            v-for="(item,index) in languageList"
+                            :key="item+index"
+                            :label="item"
+                            :value="item"
+                          />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item
+                        label-width="50px"
+                        label="标签:"
+                        class="postInfo-container-item"
+                      >
+                        <el-tag
+                          v-for="tag in dynamicTags"
+                          :key="tag"
+                          closable
+                          :disable-transitions="false"
+                          @close="handleClose(tag)"
+                        >
+                          {{ tag }}
+                        </el-tag>
+                        <el-input
+                          v-if="inputVisible"
+                          ref="saveTagInput"
+                          v-model="inputValue"
+                          class="input-new-tag"
+                          size="small"
+                          @keyup.enter.native="handleInputConfirm"
+                          @blur="handleInputConfirm"
+                        />
+                        <el-button
+                          v-else
+                          class="button-new-tag"
+                          size="small"
+                          @click="showInput"
+                        >+ New Tag</el-button>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
                 </el-col>
-                <el-col :span="6">
-                  <el-form-item
-                    label-width="50px"
-                    label="语言:"
-                    prop="language"
-                    class="postInfo-container-item"
+                <el-col :span="12">
+                  <el-upload
+                    class="avatar-uploader"
+                    :show-file-list="false"
+                    action=""
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload"
                   >
-                    <el-select
-                      v-model="postForm.language"
-                      filterable
-                      default-first-option
-                      placeholder="请选择"
+                    <img
+                      v-if="imageUrl"
+                      :src="imageUrl"
+                      class="avatar"
                     >
-                      <el-option
-                        v-for="(item,index) in languageList"
-                        :key="item+index"
-                        :label="item"
-                        :value="item"
-                      />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item
-                    label-width="50px"
-                    label="标签:"
-                    class="postInfo-container-item"
-                  >
-                    <el-tag
-                      v-for="tag in dynamicTags"
-                      :key="tag"
-                      closable
-                      :disable-transitions="false"
-                      @close="handleClose(tag)"
-                    >
-                      {{ tag }}
-                    </el-tag>
-                    <el-input
-                      v-if="inputVisible"
-                      ref="saveTagInput"
-                      v-model="inputValue"
-                      class="input-new-tag"
-                      size="small"
-                      @keyup.enter.native="handleInputConfirm"
-                      @blur="handleInputConfirm"
-                    />
-                    <el-button
+                    <i
                       v-else
-                      class="button-new-tag"
-                      size="small"
-                      @click="showInput"
-                    >+ New Tag</el-button>
-                  </el-form-item>
+                      class="el-icon-plus avatar-uploader-icon"
+                    />
+                  </el-upload>
                 </el-col>
               </el-row>
             </div>
@@ -202,6 +227,8 @@ import Tinymce from '@/components/Tinymce'
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { getArticle, newArticle, updateArticle } from '@/api/article'
+import { Upload } from '@/api/hadoop.js'
+
 import { mapGetters } from 'vuex'
 // import Warning from './Warning'
 // import {
@@ -258,6 +285,7 @@ export default {
     }
 
     return {
+      imageUrl: '',
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
@@ -315,6 +343,32 @@ export default {
     this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
+    handleAvatarSuccess(res) {
+      // this.imageUrl = URL.createObjectURL(file.raw)
+      // this.imageUrl = res.data.base64
+      // console.log(this.imageUrl)
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+
+      const fd = new FormData() // 通过form数据格式来传
+      fd.append('picFile', file) // 传文件
+
+      Upload(fd).then(res => {
+        this.imageUrl = res.data.base64
+        // console.log(this.imageUrl)
+        // console.log('success')
+      })
+      return isJPG && isLt2M
+    },
     fetchData(aid, category) {
       var query = {}
       if (category != null) {
@@ -505,5 +559,29 @@ export default {
   width: 90px;
   margin-left: 10px;
   vertical-align: bottom;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

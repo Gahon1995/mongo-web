@@ -202,6 +202,24 @@ export const asyncRoutes = [
       }
     }]
   },
+  {
+    path: '/hadoop',
+    component: Layout,
+    redirect: '/hadoop/index',
+    meta: {
+      roles: ['admin', 'user']
+    },
+    children: [{
+      path: 'index',
+      name: 'Hadoop',
+      component: () => import('@/views/hadoop/index'),
+      meta: {
+        title: 'Hadoop',
+        icon: 'dashboard'
+      }
+    }]
+  },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

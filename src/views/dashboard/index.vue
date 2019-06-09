@@ -58,6 +58,13 @@
         </div>
       </el-col>
     </el-row>
+    <el-row>
+      <el-card>
+        <div>在线节点数量: <p>{{ nodes.length }}</p>
+        </div>
+        <div>{{ nodes }}</div>
+      </el-card>
+    </el-row>
 
   </div>
 </template>
@@ -85,6 +92,7 @@ export default {
         populars: 73225
       },
       charts: {},
+      nodes: [],
       listLoading: true,
       listQuery: {
         dbms: 'Beijing'
@@ -109,6 +117,7 @@ export default {
       getInfos(this.listQuery).then(response => {
         this.nums = response.data.nums
         this.charts = response.data.charts
+        this.nodes = response.data.nodes
         this.listLoading = false
       })
     }
