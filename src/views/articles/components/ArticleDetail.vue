@@ -56,10 +56,14 @@
             </el-form-item>
 
             <div class="postInfo-container">
-              <el-row>
-                <el-col :span="12">
+              <el-row
+                type="flex"
+                align="middle"
+                justify="right"
+              >
+                <el-col :span="18">
                   <el-row>
-                    <el-col :span="6">
+                    <el-col :span="12">
                       <el-form-item
                         label-width="50px"
                         label="作者:"
@@ -74,7 +78,7 @@
                       </el-form-item>
                     </el-col>
 
-                    <el-col :span="6">
+                    <el-col :span="12">
                       <el-form-item
                         label-width="50px"
                         label="类别:"
@@ -99,7 +103,7 @@
                     </el-col>
                   </el-row>
                   <el-row>
-                    <el-col :span="6">
+                    <el-col :span="12">
                       <el-form-item
                         label-width="50px"
                         label="语言:"
@@ -121,7 +125,7 @@
                         </el-select>
                       </el-form-item>
                     </el-col>
-                    <el-col :span="6">
+                    <el-col :span="12">
                       <el-form-item
                         label-width="50px"
                         label="标签:"
@@ -155,7 +159,7 @@
                     </el-col>
                   </el-row>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="6">
                   <el-upload
                     class="avatar-uploader"
                     :show-file-list="false"
