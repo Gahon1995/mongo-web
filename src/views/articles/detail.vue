@@ -6,6 +6,13 @@
     >
 
       <div v-if="article != {}">
+        <div v-if="imageUrl">
+          <el-image
+            :src="imageUrl"
+            class="avatar2"
+            style="width:100%"
+          />
+        </div>
         <div
           class="article"
           style="margin-bottom: 20px; align: left"
@@ -160,7 +167,6 @@
 
           <div class="content">
             <div v-html="article.text" />
-
           </div>
 
         </div>
@@ -184,7 +190,7 @@
             >
               <div class="info">
                 <img
-                  class="avatar"
+                  class="avatar1"
                   :src="item.avatar || 'http://ww4.sinaimg.cn/bmiddle/006DLFVFgy1ft0j2pddjuj30v90uvagf.jpg'"
                   width="36"
                   height="36"
@@ -262,6 +268,7 @@ import { formatTime } from '@/utils/index.js'
 export default {
   data() {
     return {
+      imageUrl: '',
       openTime: null,
       loading: true,
       loadingComment: true,
@@ -379,6 +386,12 @@ export default {
           }
 
           this.article = response.data
+          if (response.data.image.indexOf('/2019') > -1) {
+            this.imageUrl =
+              'http://127.0.0.1:5000/api/hadoop/download?path=' +
+              response.data.image
+          }
+          this.getImage(this.imageUrl)
           this.fetchRecord(aid, this.article.category)
           this.loading = false
           var data = {}
@@ -388,6 +401,9 @@ export default {
         .catch(() => {
           this.$router.push({ path: '/index' })
         })
+    },
+    getImage(path) {
+      console.log(path)
     },
     fetchRecord(aid, dbms) {
       this.loadingComment = true
@@ -475,7 +491,7 @@ export default {
     .info {
       display: flex;
       align-items: center;
-      .avatar {
+      .avatar1 {
         border-radius: 50%;
       }
       .right {

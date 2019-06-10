@@ -23,6 +23,7 @@ import editorImage from './components/EditorImage'
 import plugins from './plugins'
 import toolbar from './toolbar'
 import load from './dynamicLoadScript'
+import { ossUpload, uploadImg } from '@/api/hadoop.js'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 const tinymceCDN =
@@ -147,6 +148,30 @@ export default {
         default_link_target: '_blank',
         link_title: false,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
+        file_picker_types: 'file',
+        // 上传文件
+        file_picker_callback: function(callback, value, meta) {
+          const fileUploadControl = document.getElementById('photoFileUpload')
+          fileUploadControl.click()
+          fileUploadControl.onchange = function() {
+            if (fileUploadControl.files.length > 0) {
+              const localFile = fileUploadControl.files[0]
+              ossUpload({ type: localFile.type }).then(res => {
+                uploadImg(res.data, localFile).then(res => {
+                  if (res.code === 200) {
+                    callback(res.data.name, { text: localFile.name })
+                    self.$emit('on-upload-complete', res) // 抛出 'on-upload-complete' 钩子
+                  } else {
+                    callback()
+                    self.$emit('on-upload-complete', res) // 抛出 'on-upload-complete' 钩子
+                  }
+                })
+              })
+            } else {
+              alert('请选择文件上传')
+            }
+          }
+        },
         init_instance_callback: editor => {
           if (_this.value) {
             editor.setContent(_this.value)

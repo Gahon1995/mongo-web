@@ -15,3 +15,19 @@ export function Upload(data) {
     data
   })
 }
+
+export function ossUpload(data) {
+  return request({
+    url: '/hadoop/upload',
+    method: 'post',
+    data
+  })
+}
+
+export function uploadImg(data) {
+  return request({
+    url: '/hadoop/upload',
+    method: 'post',
+    data
+  })
+}

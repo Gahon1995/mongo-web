@@ -1,10 +1,13 @@
 <template>
-  <div class="dashboard-editor-container">
+  <div
+    v-loading="listLoading"
+    class="dashboard-editor-container"
+  >
     <div align="center">
       <el-tabs
         v-model="listQuery.dbms"
         :stretch="true"
-        style="margin-bottom: 20px; width: 50%; align=center"
+        style="margin-bottom: 20px; width: 50%; align:center"
         @tab-click="handleClick"
       >
         <el-tab-pane
@@ -59,13 +62,16 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-card>
+      <nodes
+        :data="nodes"
+        :loading="loading"
+      />
+      <!-- <el-card>
         <div>在线节点数量: <p>{{ nodes.length }}</p>
         </div>
         <div>{{ nodes }}</div>
-      </el-card>
+      </el-card>-->
     </el-row>
-
   </div>
 </template>
 
@@ -73,17 +79,20 @@
 import { mapGetters } from 'vuex'
 import PanelGroup from './components/PanelGroup'
 import PieChart from './components/PieChart'
+import Nodes from './components/Nodes'
 import { getInfos } from '@/api/dashboard.js'
 
 export default {
   name: 'Dashboard',
   components: {
     PanelGroup,
-    PieChart
+    PieChart,
+    Nodes
   },
 
   data() {
     return {
+      loading: true,
       total: 0,
       nums: {
         users: 100000,
@@ -92,7 +101,16 @@ export default {
         populars: 73225
       },
       charts: {},
-      nodes: [],
+      nodes: {
+        connections_current: 0,
+        repl_role: 'other',
+        uptime: '',
+        replica: {
+          hosts: [],
+          primary: null,
+          me: null
+        }
+      },
       listLoading: true,
       listQuery: {
         dbms: 'Beijing'

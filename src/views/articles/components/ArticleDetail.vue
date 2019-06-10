@@ -164,18 +164,21 @@
                     class="avatar-uploader"
                     :show-file-list="false"
                     action=""
+                    :http-request="UploadFile"
                     :on-success="handleAvatarSuccess"
                     :before-upload="beforeAvatarUpload"
                   >
-                    <img
+                    <el-image
                       v-if="imageUrl"
                       :src="imageUrl"
-                      class="avatar"
-                    >
+                      class="avatar2"
+                      style="width:100%"
+                      fill="contain"
+                    />
                     <i
                       v-else
                       class="el-icon-plus avatar-uploader-icon"
-                    />
+                    >上传封面</i>
                   </el-upload>
                 </el-col>
               </el-row>
@@ -326,7 +329,7 @@ export default {
         this.postForm.display_time = new Date(val)
       }
     },
-    ...mapGetters(['user'])
+    ...mapGetters(['user', 'token'])
   },
   created() {
     if (this.isEdit) {
@@ -353,7 +356,7 @@ export default {
       // console.log(this.imageUrl)
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
@@ -362,16 +365,20 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-
+      return isJPG && isLt2M
+    },
+    UploadFile(param) {
       const fd = new FormData() // 通过form数据格式来传
-      fd.append('picFile', file) // 传文件
+      fd.append('picFile', param.file) // 传文件
 
       Upload(fd).then(res => {
-        this.imageUrl = res.data.base64
+        this.$message.success('图片上传成功')
+        this.postForm.image = res.data.img_path
+        this.imageUrl =
+          'http://127.0.0.1:5000/api/hadoop/download?path=' + res.data.img_path
         // console.log(this.imageUrl)
         // console.log('success')
       })
-      return isJPG && isLt2M
     },
     fetchData(aid, category) {
       var query = {}
@@ -566,7 +573,7 @@ export default {
 }
 
 .avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
+  border: 1px dashed #000000;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
@@ -583,7 +590,7 @@ export default {
   line-height: 178px;
   text-align: center;
 }
-.avatar {
+.avatar2 {
   width: 178px;
   height: 178px;
   display: block;
