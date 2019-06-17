@@ -166,7 +166,10 @@
           <el-divider content-position="center">上次更新 {{ article.update_time }}</el-divider>
 
           <div class="content">
-            <div v-html="article.text" />
+            <div
+              style="overflow:hidden"
+              v-html="article.text"
+            />
           </div>
 
         </div>

@@ -6,10 +6,9 @@
       :rules="rules"
       class="form-container"
     >
-
       <sticky
         :z-index="10"
-        :class-name="'sub-navbar '+postForm.status"
+        :class-name="'sub-navbar ' + postForm.status"
       >
         <!-- <CommentDropdown v-model="postForm.comment_disabled" />
         <PlatformDropdown v-model="postForm.platforms" />
@@ -33,7 +32,6 @@
             草稿
           </el-button>
         </div>
-
       </sticky>
 
       <div class="createPost-main-container">
@@ -93,8 +91,8 @@
                           placeholder="请选择"
                         >
                           <el-option
-                            v-for="(item,index) in categoryList"
-                            :key="item+index"
+                            v-for="(item, index) in categoryList"
+                            :key="item + index"
                             :label="item"
                             :value="item"
                           />
@@ -117,8 +115,8 @@
                           placeholder="请选择"
                         >
                           <el-option
-                            v-for="(item,index) in languageList"
-                            :key="item+index"
+                            v-for="(item, index) in languageList"
+                            :key="item + index"
                             :label="item"
                             :value="item"
                           />
@@ -341,6 +339,7 @@ export default {
       this.postForm = Object.assign({}, defaultForm)
       // if (this.user.name !== 'admin') {
       this.postForm.authors = this.user.name
+
       // }
     }
 
@@ -394,6 +393,15 @@ export default {
           // this.postForm.abstract += `   Article Id:${this.postForm.id}`
 
           // set tagsview title
+          console.log(this.postForm.image)
+
+          if (this.postForm.image.indexOf('/2019') > -1) {
+            this.imageUrl =
+              'http://127.0.0.1:5000/api/hadoop/download?path=' +
+              this.postForm.image
+
+            console.log(this.imageUrl)
+          }
           if (this.postForm.articleTags !== '') {
             this.dynamicTags = this.postForm.articleTags.split(',')
           }
